@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../redux/action/authAction"
+import { login } from "../redux/actions/authAction"
 import { useNavigate} from "react-router-dom"
-import logo from '../images/studentcodehub_logo.png'
+import logo from '../images/logo192.png'
 
 const Login = () => {
     const  initialState = { userName: "", password: ""}
     const [ userData, setUserData ] = useState(initialState)
     const { userName, password } = userData
     const [errors, setErrors] = useState({})
+    // const [ typePass, setTypePass ] = useState(false)
     const { auth } = useSelector((state) => state)
     const dispatch = useDispatch()
     const history = useNavigate()
@@ -24,24 +25,34 @@ const Login = () => {
     }
 
     const handleSubmit = (e) => {
-        e.preventDefault()
-
+        e.preventDefault();
+    
         // Kiểm tra validation
         let errors = {};
+    
+        const usernameRegex = /^[a-zA-Z0-9_-]*$/; // Chỉ chấp nhận ký tự chữ, số, gạch dưới (_) và dấu gạch ngang (-)
+        const passwordRegex = /^[a-zA-Z0-9!@#$%^&*()_+-=]*$/; // Chỉ chấp nhận ký tự chữ, số và một số ký tự đặc biệt
+    
         if (!userName) {
             errors.userName = "Vui lòng nhập tên đăng nhập";
+        } else if (!usernameRegex.test(userName)) {
+            errors.userName = "Tên đăng nhập không hợp lệ";
         }
         if (!password) {
             errors.password = "Vui lòng nhập mật khẩu";
+        } else if (!passwordRegex.test(password)) {
+            errors.password = "Mật khẩu không hợp lệ";
         }
-
-        if(Object.keys(errors).length === 0) {
-            dispatch( login(userData) )
+    
+        if (Object.keys(errors).length === 0) {
+            // Nếu không có lỗi, gửi form
+            dispatch(login(userData));
         } else {
-            setErrors(errors)
+            // Nếu có lỗi, hiển thị thông báo lỗi
+            setErrors(errors);
         }
-
     }
+    
 
     return (
         <section className="vh-100">
@@ -50,7 +61,6 @@ const Login = () => {
 
                     <div>
                     </div>
-
                     {/* Main */}
                     <div className="d-flex">
                         <div className="d-flex align-items-center justify-content-between col-md-9 col-lg-6 col-xl-5">
@@ -58,12 +68,12 @@ const Login = () => {
                             className="img-fluid" alt="logo" />
                         </div>
                         <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1" >
-                            <h2 style={{color: "#2F56A6", textAlign: "center"}}>Đăng nhập tài khoản</h2>
+                            <h2 style={{fontSize: "2rem", fontWeight: "bold", color: "#2F56A6", textAlign: "center"}}>Đăng nhập tài khoản</h2>
 
                             <form onSubmit={handleSubmit}>
 
                             {/* username input */}
-                            <div className="form-outline mb-4">
+                            <div className="form-outline mb-4 mt-4">
                                 <label className="form-label" htmlFor="InputUsername" style={{fontWeight: "bold", color: "#2F56A6"}}>Tên đăng nhập</label>
                                 <input type="text" id="InputUsername" onChange={handleChangeInput} value={userName} name="userName" className="form-control form-control-lg"
                                 placeholder="Nhập username của bạn" />

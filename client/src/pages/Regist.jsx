@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { regist } from "../redux/action/authAction"
+import { regist } from "../redux/actions/authAction"
 import { useNavigate } from "react-router-dom"
-import logo from '../images/studentcodehub_logo.png'
+import logo from '../images/logo192.png'
 
 const Regist = () => {
     const  initialState = {fullName: "", userName: "", email: "", password: ""}
@@ -25,14 +25,25 @@ const Regist = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
+    
         // Kiểm tra validation
         let errors = {};
+    
+        const nameRegex = /^[a-zA-Z\s]*$/; // Chỉ chấp nhận ký tự chữ và khoảng trắng
+        const usernameRegex = /^[a-zA-Z0-9_-]*$/; // Chỉ chấp nhận ký tự chữ, số, gạch dưới (_) và dấu gạch ngang (-)
+        const passwordRegex = /^[a-zA-Z0-9!@#$%^&*()_+-=]*$/; // Chỉ chấp nhận ký tự chữ, số và một số ký tự đặc biệt
+    
         if (!fullName) {
             errors.fullName = "Vui lòng nhập tên đầy đủ của bạn";
+        } else if (!nameRegex.test(fullName)) {
+            errors.fullName = "Tên không được chứa ký tự đặc biệt";
+        } else if (fullName.length > 50) {
+            errors.fullName = "Tên quá dài, vui lòng nhập ít hơn 50 ký tự";
         }
         if (!userName) {
             errors.userName = "Vui lòng nhập tên đăng nhập";
+        } else if (!usernameRegex.test(userName)) {
+            errors.userName = "Tên đăng nhập không hợp lệ";
         }
         if (!email) {
             errors.email = "Vui lòng nhập email của bạn";
@@ -43,8 +54,10 @@ const Regist = () => {
             errors.password = "Vui lòng nhập mật khẩu";
         } else if (password.length < 6) {
             errors.password = "Mật khẩu phải có ít nhất 6 ký tự";
+        } else if (!passwordRegex.test(password)) {
+            errors.password = "Mật khẩu không hợp lệ";
         }
-
+    
         if (Object.keys(errors).length === 0) {
             // Nếu không có lỗi, gửi form
             dispatch(regist(userData));
@@ -53,6 +66,7 @@ const Regist = () => {
             setErrors(errors);
         }
     }
+    
     return (
         <div>
             <section className="vh-100">
@@ -67,11 +81,11 @@ const Regist = () => {
                                 className="img-fluid" alt="logo" />
                             </div>
                             <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1" >
-                                <h2 style={{color: "#2F56A6", textAlign: "center"}}>Đăng ký tài khoản</h2>
+                                <h2 style={{fontSize: "2rem", fontWeight: "bold", color: "#2F56A6", textAlign: "center"}}>Đăng ký tài khoản</h2>
 
                                 <form onSubmit={handleSubmit}>
                                     {/* fullname input */}
-                                    <div className="form-outline mb-4">
+                                    <div className="form-outline mb-4 mt-4">
                                         <label className="form-label" htmlFor="InputFullname" style={{ fontWeight: "bold", color: "#2F56A6" }}>Tên tài khoản</label>
                                         <input type="text" id="InputFullname" onChange={handleChangeInput} value={fullName} name="fullName" className="form-control form-control-lg"
                                             placeholder="Nhập tên đầy đủ của bạn" />
@@ -109,7 +123,7 @@ const Regist = () => {
                                         <button type="submit" className="btn btn-primary btn-lg"
                                             style={{ width: "100%" }} >Đăng ký</button>
                                     </div>
-                                    <p className="small fw-bold mt-2 pt-1 mb-0">Bạn đã có tài khoản? <a href="/login"
+                                    <p className="small fw-bold mt-2 pt-1 mb-0">Bạn đã có tài khoản? <a href="/"
                                         className="link-danger">Đăng nhập ngay</a></p>
                                     </form>
                             </div>
