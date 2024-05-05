@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { regist } from "../redux/actions/authAction"
+import { regist } from "../redux/action/authAction"
 import { useNavigate } from "react-router-dom"
-import logo from '../images/logo192.png'
+import logo from '../images/studentcodehub_logo.png'
 
 const Regist = () => {
     const  initialState = {fullName: "", userName: "", email: "", password: ""}
@@ -29,7 +29,7 @@ const Regist = () => {
         // Kiểm tra validation
         let errors = {};
     
-        const nameRegex = /^[a-zA-Z\s]*$/; // Chỉ chấp nhận ký tự chữ và khoảng trắng
+        const nameRegex = /^[a-zA-Z\sàáạãảăắằẵặâấầẩẫậèéẹẻẽêềếểễệđìíịỉĩòóọỏõôốồổỗộơớờởỡợùúụủũưứừửữựỳỹỷỵ]*$/;
         const usernameRegex = /^[a-zA-Z0-9_-]*$/; // Chỉ chấp nhận ký tự chữ, số, gạch dưới (_) và dấu gạch ngang (-)
         const passwordRegex = /^[a-zA-Z0-9!@#$%^&*()_+-=]*$/; // Chỉ chấp nhận ký tự chữ, số và một số ký tự đặc biệt
     

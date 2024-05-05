@@ -1,5 +1,8 @@
 package com.group7.studentcodehub.entities;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,6 +26,7 @@ public class token {
 	public String tokenType = "BEARER";
 	public Boolean revoked;
 	public Boolean expired;
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@ManyToOne
 	private user user;
 }

@@ -16,7 +16,15 @@ import com.group7.studentcodehub.entities.user;
 import com.group7.studentcodehub.entities.token;
 import com.group7.studentcodehub.repository.TokenRepository;
 import com.group7.studentcodehub.repository.UserRepository;
+
+import com.group7.studentcodehub.entities.user_follow;
+import com.group7.studentcodehub.repository.UserFollowRepository;
+import com.group7.studentcodehub.service.JwtService;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -24,6 +32,8 @@ import jakarta.servlet.http.HttpServletResponse;
 public class AuthenticationService {
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	UserFollowRepository userFollowRepository;
 	@Autowired
 	private TokenRepository tokenRepository;
 	@Autowired
@@ -42,6 +52,7 @@ public class AuthenticationService {
 			return AuthenticationResponse.builder()
 					.msg("Email đã tồn tại")
 					.build();
+		
 		var User = user.builder()
 				.fullName(request.getFullName())
 				.userName(request.getUserName())
@@ -54,11 +65,15 @@ public class AuthenticationService {
 		var jwtToken = jwtService.generateToken(User);
 		var refreshToken = jwtService.generateRefreshToken(User);
 		saveUserToken(savedUser, jwtToken);
+		List<user_follow> followers = new ArrayList<>();
+		List<user_follow> following = new ArrayList<>();
 		return AuthenticationResponse.builder()
 				.accessToken(jwtToken)
 				.refresh_token(refreshToken)
 				.msg("Đăng ký thành công")
 				.User(User)
+				.followers(followers)
+				.following(following)
 				.build();
 	}
 	
@@ -75,11 +90,15 @@ public class AuthenticationService {
 		var jwtToken = jwtService.generateToken(User);
 		var refreshToken = jwtService.generateRefreshToken(User);
 		saveUserToken(savedUser, jwtToken);
+		List<user_follow> followers = new ArrayList<>();
+		List<user_follow> following = new ArrayList<>();
 		return AuthenticationResponse.builder()
 				.accessToken(jwtToken)
 				.refresh_token(refreshToken)
 				.msg("Đăng ký thành công")
 				.User(User)
+				.followers(followers)
+				.following(following)
 				.build();
 	}
 
@@ -92,11 +111,15 @@ public class AuthenticationService {
 			var refreshToken = jwtService.generateRefreshToken(User);
 			revokeAllUserTokens(User);
 			saveUserToken(User, jwtToken);
+			List<user_follow> followers = userFollowRepository.findByTarget(userRepository.findById(User.getId()));
+			List<user_follow> following = userFollowRepository.findBySource(userRepository.findById(User.getId()));
 			return AuthenticationResponse.builder()
 					.accessToken(jwtToken)
 					.refresh_token(refreshToken)
 					.msg("Đăng nhập thành công")
 					.User(User)
+					.followers(followers)
+					.following(following)
 					.build();
 		} catch (Exception e) {
 			return AuthenticationResponse.builder()
@@ -155,12 +178,16 @@ public class AuthenticationService {
 			userName = jwtService.extractUsername(accessToken);
 			if (userName != null) {
 				var User = userRepository.findByUserName(userName).orElseThrow();
+				List<user_follow> followers = userFollowRepository.findByTarget(userRepository.findById(User.getId()));
+				List<user_follow> following = userFollowRepository.findBySource(userRepository.findById(User.getId()));
 				var isTokenValid = tokenRepository.findByToken(accessToken)
 						.map(token -> (token.expired == false) && (token.revoked == false)).orElse(false);
 				if (jwtService.isTokenValid(accessToken, User) && isTokenValid) {
 					var authResponse = AuthenticationResponse.builder()
 							.User(User)
 							.msg("Lấy thông tin đăng nhập thành công")
+							.followers(followers)
+							.following(following)
 							.build();
 					new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
 				} else {

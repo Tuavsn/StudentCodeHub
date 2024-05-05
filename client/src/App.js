@@ -1,32 +1,46 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect, useState } from 'react'
 import UserHome from './pages/UserHome';
 import AdminHome from './pages/AdminHome';
 import Login from './pages/Login';
 import Regist from './pages/Regist';
-import logo from './logo.svg';
+import Alert from './components/common/alert/Alert';
+import SocketClient from './SocketClient'
+import Loading from './components/common/alert/Loading'
+import { getUserInfo } from './redux/action/authAction'
 
 function App() {
+  const { auth, userType } = useSelector((state) => state)
+  const [isRefreshed, setIsRefreshed] = useState(false);
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(getUserInfo()).then(() => {
+      setIsRefreshed(true)
+    })
+  }, [dispatch])
+
+  if (!isRefreshed) {
+    return <Loading />;
+  }
+
   return (
     <Router>
-      <div className='main'>
+      <SocketClient>
+        <Alert />
+          <div className='main'>
 
-          <Routes>
-            <Route exact path='/login' Component={Login} />
-            <Route exact path='/regist' Component={Regist} />
-            {/* <Route exact path='/' Component={ userType === "ADMIN" ?
-                                              auth.token ? AdminHome : Login
-                                              : auth.token ? UserHome : Login } />
-            <Route exact path='/regist' Component={Regist} />
-            { userType === "USER" && (
-              <>
-                <Route exact path="/:page" Component={PrivateRouter} />
-                <Route exact path="/:page/:id" Component={PrivateRouter} />
-              </>
-            )} */}
-          </Routes>
+              <Routes>
+                <Route exact path='/' Component={userType === "ADMIN" ?
+                  auth.token ? AdminHome : Login
+                  : auth.token ? UserHome : Login} />
+                <Route exact path='/regist' Component={Regist} />
+              </Routes>
 
-      </div>
+          </div>
+      </SocketClient>
    </Router>
   );
 }

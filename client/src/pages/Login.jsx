@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../redux/actions/authAction"
+import { login } from "../redux/action/authAction"
 import { useNavigate} from "react-router-dom"
-import logo from '../images/logo192.png'
+import logo from '../images/studentcodehub_logo.png'
 
 const Login = () => {
     const  initialState = { userName: "", password: ""}

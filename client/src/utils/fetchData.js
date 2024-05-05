@@ -1,5 +1,5 @@
 import axios from 'axios'
-const server_url = 'http://localhost:8080/api'
+const server_url = process.env.REACT_APP_API_URL
 
 export const getDataAPI = async(url, token) => {
     const res = await axios.get(`${server_url}/${url}`, {

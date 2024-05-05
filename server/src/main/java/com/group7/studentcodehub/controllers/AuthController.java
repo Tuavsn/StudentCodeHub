@@ -1,10 +1,11 @@
 package com.group7.studentcodehub.controllers;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,13 +16,19 @@ import com.group7.studentcodehub.dto.UserLoginDto;
 import com.group7.studentcodehub.dto.UserRegistDto;
 import com.group7.studentcodehub.service.AuthenticationService;
 
+import com.group7.studentcodehub.repository.UserFollowRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin
+@CrossOrigin()
 public class AuthController {
 	
 	@Autowired
 	AuthenticationService authenticationService;
+	@Autowired
+	UserFollowRepository userFollowRepository;
 	
 	@PostMapping("/regist")
 	public ResponseEntity<AuthenticationResponse> Regist(@RequestBody UserRegistDto request) {
@@ -42,6 +49,22 @@ public class AuthController {
 	@PostMapping("/logout")
 	public ResponseEntity<AuthenticationResponse> Logout() {
 		return ResponseEntity.ok(authenticationService.logout());
+	}
+	
+	@PostMapping("/refresh-token")
+	public void RefreshToken(
+			HttpServletRequest request,
+			HttpServletResponse response
+	) throws IOException {
+		authenticationService.refreshToken(request, response);
+	}
+	
+	@PostMapping("/get-user-info")
+	public void getUserInfo(
+			HttpServletRequest request,
+			HttpServletResponse response
+	) throws IOException {
+		authenticationService.getUserInfo(request, response);
 	}
 	
 }

@@ -10,7 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.group7.studentcodehub.entities.user_follow;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -42,24 +42,21 @@ public class user implements UserDetails {
 	private String gender;
 	private String mobile;
 	private String address;
-	private String story;
-	private String website;
 	private String role;
-	@OneToMany(mappedBy = "target")
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	private List<user_follow> followers;
-
+	private int status; // status = 0: oke, status = 1: reported, status = 2: hide
+	
 	@JsonIgnore
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return List.of(new SimpleGrantedAuthority("ROLE_" + role));
+		return List.of(new SimpleGrantedAuthority("ROLE_"+role));
 	}
 
 	@Override
+	@JsonIgnore
 	public String getUsername() {
 		return userName;
 	}
-
+	
 	@Override
 	@JsonIgnore
 	public String getPassword() {
@@ -67,21 +64,25 @@ public class user implements UserDetails {
 	}
 
 	@Override
+	@JsonIgnore
 	public boolean isAccountNonExpired() {
 		return true;
 	}
 
 	@Override
+	@JsonIgnore
 	public boolean isAccountNonLocked() {
 		return true;
 	}
 
 	@Override
+	@JsonIgnore
 	public boolean isCredentialsNonExpired() {
 		return true;
 	}
 
 	@Override
+	@JsonIgnore
 	public boolean isEnabled() {
 		return true;
 	}

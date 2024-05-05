@@ -2,7 +2,9 @@ import { GLOBALTYPES } from "../action/globalTypes";
 
 const initialState = {
     token: '',
-    user: null
+    user: null,
+    followers: [],
+    following: []
 }
 
 const authReducer = (state = initialState, action) => {
@@ -11,7 +13,9 @@ const authReducer = (state = initialState, action) => {
             return {
                 ...state,
                 token: action.payload.token,
-                user: action.payload.user
+                user: action.payload.user,
+                followers: action.payload.followers,
+                following: action.payload.following
             }
         default:
             return state

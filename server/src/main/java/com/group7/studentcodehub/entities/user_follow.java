@@ -1,5 +1,8 @@
 package com.group7.studentcodehub.entities;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,8 +24,10 @@ public class user_follow {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@ManyToOne
 	private user source;
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@ManyToOne
 	private user target;
 }

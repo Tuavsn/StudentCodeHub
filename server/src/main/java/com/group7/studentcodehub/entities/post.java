@@ -31,7 +31,9 @@ public class post {
 	private int id;
 	@ManyToOne
 	private user user;
+	@Column(columnDefinition = "TEXT")
 	private String content;
+	private int status;
 	@OneToMany(mappedBy = "post")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<post_image> postImage;

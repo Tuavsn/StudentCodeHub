@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -21,6 +22,9 @@ public class SecurityConfig {
 
 	@Autowired
 	private AuthenticationProvider authenticationProvider;
+	
+	@Autowired
+	private CorsConfigurationSource corsConfigurationSource;
 
 	@Autowired
 	private JwtFilter jwtFilter;
@@ -31,6 +35,7 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf((csrf) -> csrf.disable())
+				.cors((cors) -> cors.configurationSource(corsConfigurationSource))
 				.authorizeHttpRequests(
 						request -> request.requestMatchers("/api/auth/**", "/ws/**", "/api/images/**").permitAll()
 						.anyRequest().authenticated())
@@ -45,4 +50,5 @@ public class SecurityConfig {
 				.httpBasic(withDefaults());
 		return http.build();
 	}
+	
 }

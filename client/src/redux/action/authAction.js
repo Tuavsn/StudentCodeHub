@@ -13,7 +13,7 @@ export const login = (data) => async(dispatch) => {
 
         dispatch({
             type: GLOBALTYPES.AUTH,
-            payload: { token: "Bearer " + res.data.access_token, user: res.data.user }
+            payload: { token: "Bearer " + res.data.access_token, user: res.data.user, followers: res.data.followers, following: res.data.following }
         })
 
         dispatch({
@@ -45,7 +45,7 @@ export const regist = (data) => async(dispatch) => {
 
         dispatch({
             type: GLOBALTYPES.AUTH,
-            payload: { token: "Bearer " + res.data.access_token, user: res.data.user }
+            payload: { token: "Bearer " + res.data.access_token, user: res.data.user, followers: res.data.followers, following: res.data.following }
         })
 
         dispatch({
@@ -92,10 +92,9 @@ export const getUserInfo = () => async(dispatch) => {
         const accessToken = localStorage.getItem("accessToken")
         try {
             const res = await postDataAPI("auth/get-user-info", null, accessToken)
-
             dispatch({
                 type: GLOBALTYPES.AUTH,
-                payload: { token: accessToken, user: res.data.user }
+                payload: { token: accessToken, user: res.data.user, followers: res.data.followers, following: res.data.following }
             })
 
             dispatch({

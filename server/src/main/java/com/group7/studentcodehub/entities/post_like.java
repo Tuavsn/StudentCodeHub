@@ -3,6 +3,8 @@ package com.group7.studentcodehub.entities;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,6 +27,7 @@ public class post_like {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	@ManyToOne
+	@JsonIgnore
 	private post post;
 	@ManyToOne
 	@OnDelete(action = OnDeleteAction.CASCADE)

@@ -1,8 +1,5 @@
 package com.group7.studentcodehub.entities;
 
-import java.time.LocalDateTime;
-
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,18 +16,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user_friend")
-public class user_friend {
+@Table(name = "comment_like")
+public class comment_like {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	@ManyToOne
-	private user source;
+	private post_comment postComment;
 	@ManyToOne
-	private user target;
-	private int status;
-	@Column(columnDefinition = "TIMESTAMP")
-	private LocalDateTime createAt;
-	@Column(columnDefinition = "TIMESTAMP")
-	private LocalDateTime updateAt;
+	private user user;
 }
