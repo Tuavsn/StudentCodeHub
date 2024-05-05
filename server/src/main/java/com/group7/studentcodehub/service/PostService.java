@@ -82,6 +82,7 @@ public class PostService {
 	
 	@Transactional
 	public post createPost(
+			String postHeader,
 			Object postContent,
 			List<String> postImages,
 			HttpServletRequest request
@@ -99,6 +100,7 @@ public class PostService {
 				List<post_comment> postComment = new ArrayList<>();
 				List<post_image> postImage = new ArrayList<>();
 				var newPost = post.builder()
+					.header(postHeader)
 					.content(postContent.toString())
 					.user(User)
 					.postLike(postLike)
@@ -121,6 +123,7 @@ public class PostService {
 	@Transactional
 	public post updatePost(
 			int postId,
+			String postHeader,
 			Object postContent,
 			List<String> postImages,
 			Boolean isNewImage,
@@ -136,6 +139,7 @@ public class PostService {
 			var User = userRepository.findByUserName(userName).orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng"));
 			if (jwtService.isTokenValid(refreshToken, User)) {
 				post existPost = postRepository.findById(postId).orElseThrow(() -> new AttributeNotFoundException("Không tìm thấy bài post"));
+				existPost.setHeader(postHeader);
 				existPost.setContent(postContent.toString());
 				postRepository.save(existPost);
 				if(isNewImage) {

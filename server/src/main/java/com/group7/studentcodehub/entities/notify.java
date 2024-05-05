@@ -33,6 +33,7 @@ public class notify {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@ManyToOne
 	private user target;
+	@Column(columnDefinition = "TEXT")
 	private String content;
 	private String link;
 	private int status;

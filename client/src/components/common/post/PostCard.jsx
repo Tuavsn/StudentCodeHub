@@ -5,7 +5,7 @@ import CardFooter from "./CardFooter"
 
 const PostCard = ({ post, index, type }) => {
     return (
-        <div className="card my-3 outer-shadow p-4 bg-light" style={{borderRadius: "2rem", boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px"}}>
+        <div className="card my-3 p-4" style={{borderLeft: ".3rem solid #2F55A6"}}>
             <CardHeader post={post} />
             <CardBody post={post} index={index} />
             <CardFooter post={post} type={type} />

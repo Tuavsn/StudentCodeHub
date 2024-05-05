@@ -32,16 +32,24 @@ const CardHeader = ({ post }) => {
     return (
         <>
         <div className="d-flex align-items-center justify-content-between">
-            <div className="d-flex align-items-center gap-4">
+            <div className="d-flex align-items-stretch gap-4">
                 <div>
-                    <img src={post.user.avatar} style={{width: "5.2rem", height: "5.5rem", borderRadius: "20%", objectFit: "cover"}} />
+                    <img src={post.user.avatar} style={{width: "4rem", height: "4rem", borderRadius: "20%", objectFit: "cover"}} />
                 </div>
-                <div>
-                    <div className="d-flex align-items-center gap-2" style={{cursor: "pointer"}} onClick={() => navigate(`/user/${post.user.id}`)}>
-                        <h4 className={`${isHover === post.id ? 'text-primary': ''}`} onMouseEnter={() => setIsHover(post.id)} onMouseLeave={() => setIsHover(null)}>{post.user.fullName}</h4>
-                        {post.user.role === "ADMIN" && (<img src={checkIcon} style={{width: "1rem"}} />)}
+                <div className="overflow-hidden">
+                    <h3 style={{color: "#2F55A6", margin: "0", cursor: "pointer"}} onClick={() => navigate(`/post/${post.id}`)}>{post.header}</h3>
+                    <div className="d-flex align-items-center gap-2">
+                        Đăng bởi:
+                        <span className={`${isHover === post.id ? 'text-primary': ''}`} 
+                        onMouseEnter={() => setIsHover(post.id)} 
+                        onMouseLeave={() => setIsHover(null)}
+                        onClick={() => navigate(`/user/${post.user.id}`)}
+                        style={{cursor: "pointer"}}>
+                            {post.user.fullName}
+                        </span>
+                        {post.user.role === "ADMIN" && (<img src={checkIcon} style={{width: ".8rem"}} />)}
+                        <span>{moment(post.createAt).format('llll')} <i className="fa-solid fa-clock-rotate-left"></i></span>
                     </div>
-                    {moment(post.createAt).format('llll')}
                 </div>
             </div>
             <div className="dropdown">

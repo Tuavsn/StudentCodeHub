@@ -5,10 +5,11 @@ import { createPost } from "../../../redux/action/postAction";
 import { useDispatch, useSelector } from "react-redux";
 
 const InputPost = () => {
-    const { auth, socket } = useSelector((state) => state)
+    const { auth } = useSelector((state) => state)
     const dispatch = useDispatch()
     const editorRef = useRef(null);
     const [editorData, setEditorData] = useState('');
+    const [headerInput, setHeaderInput] = useState('');
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
 
@@ -27,6 +28,11 @@ const InputPost = () => {
         fileInput.value = '';
     }
 
+    const handleHeaderInputChange = (e) => {
+        const data = e.target.value
+        setHeaderInput(data)
+    }
+
     const handleEditorChange = (e, editor) => {
         const data = editor.getData()
         setEditorData(data);
@@ -34,14 +40,17 @@ const InputPost = () => {
 
     const handleButtonClick = (e) => {
         e.preventDefault()
-        dispatch(createPost({postImages: selectedFiles, content: editorData, auth: auth}))
+        dispatch(createPost({postImages: selectedFiles, header: headerInput, content: editorData, auth: auth}))
         setSelectedFiles([]);
         setImagePreviews([]);
         const fileInput = document.getElementById('fileInput');
+        const header = document.getElementById('headerInput');
         const editor = editorRef.current.editor;
         fileInput.value = '';
+        header.value = '';
         editor.setData('')
         setEditorData('')
+        setHeaderInput('')
     }
 
     const handleCancelPost = (e) => {
@@ -49,10 +58,13 @@ const InputPost = () => {
         setSelectedFiles([]);
         setImagePreviews([]);
         const fileInput = document.getElementById('fileInput');
+        const header = document.getElementById('headerInput');
         fileInput.value = '';
+        header.value = '';
         const editor = editorRef.current.editor;
         editor.setData('')
         setEditorData('')
+        setHeaderInput('')
     }
 
     return (
@@ -92,9 +104,9 @@ const InputPost = () => {
                             {selectedFiles.length > 0 && (
                                 <div>
                                     {
-                                    imagePreviews.map((preview, index) => (
-                                        <img key={index} src={preview} style={{maxWidth: "100%", margin: "1rem 0", boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px"}} alt="..." />
-                                    ))
+                                        imagePreviews.map((preview, index) => (
+                                            <img key={index} src={preview} style={{maxWidth: "100%", margin: "1rem 0", boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px"}} alt="..." />
+                                        ))
                                     }
                                             
                                     <div className="text-center">
@@ -102,6 +114,8 @@ const InputPost = () => {
                                     </div>
                                 </div>
                             )}
+                            <h4>Tiêu đề</h4>
+                            <input id="headerInput" className="mb-2 mb-3 p-2 w-100" type="text" onChange={(e) => handleHeaderInputChange(e)}></input>
                             <h4>Nội dung</h4>
                             <CKEditor
                                 editor={ClassicEditor}

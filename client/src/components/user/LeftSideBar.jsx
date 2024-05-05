@@ -14,7 +14,7 @@ import { getExplorePosts, getHomePosts } from "../../redux/action/postAction"
 
 const LeftSideBar = () => {
     const [userMenu, setUserMenu] = useState(1)
-    const { auth, homePosts, userMessage } = useSelector((state) => state)
+    const { auth, userMessage } = useSelector((state) => state)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -113,9 +113,7 @@ const LeftSideBar = () => {
                 <>
                     <InputPost />
                     <UpdatePost />
-                    {homePosts.result === 0 ?
-                        <h4 className="text-center w-100 py-4">Không có bài đăng nào</h4>
-                        : <Posts />}
+                    <Posts />
                     <div className="col-md-2">
                         <RightSideBar />
                     </div>
@@ -125,9 +123,7 @@ const LeftSideBar = () => {
                 <>
                     <InputPost />
                     <UpdatePost />
-                    {homePosts.result === 0 ?
-                        <h4 className="text-center w-100 py-4">Không có bài đăng nào</h4>
-                        : <Posts />}
+                    <Posts />
                     <div className="col-md-2">
                         <RightSideBar />
                     </div>

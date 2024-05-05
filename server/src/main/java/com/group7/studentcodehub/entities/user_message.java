@@ -30,6 +30,7 @@ public class user_message {
 	private user target;
 	@Column(columnDefinition = "TEXT")
 	private String content;
+	@Column(columnDefinition = "TEXT")
 	private String image;
 	private int status; /* 0 is last msg and is not read, 1 is read */
 	@Column(columnDefinition = "TIMESTAMP")

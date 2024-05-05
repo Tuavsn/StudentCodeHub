@@ -18,13 +18,27 @@ const Posts = () => {
     return (
         <div className="vh-100 w-100" style={{width: "280px", height: "100%", overflowY: "scroll", scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
             <div className="d-flex flex-column" style={{maxWidth: "1200px", margin: "auto"}}>
+                {/* Wellcome div */}
+                <div className="card w-100 mt-4">
+                    <div className="card-body">
+                        <h4 className="card-title" style={{color: "#fff", backgroundColor: "#2F55A6", padding: ".8rem", borderRadius: ".2rem"}}><strong>Chào mừng bạn đến với StudentCodeHub</strong></h4>
+                        <p className="card-text"><strong style={{color: "#2F55A6"}}>StudentCodeHub</strong> là nền tảng mạng xã hội học lập trình trực tuyến. Chúng tôi cung một môi trường nơi mọi người có thể chia sẻ những kiến thức về, những bài tập lập trình đi kèm chức năng chấm code trực tuyến giúp mọi người ngay lập tức biết lời giải của mình đúng hay sai.</p>
+                        <p>Còn chờ gì nữa, hãy tham khảo lộ trình học tập rồi thử sức với bài tập đầu tiên nhé. <a href="#">Xem lộ trình</a></p>
+                    </div>
+                </div>
 
-                {homePosts.posts.map((post, index) => (
-                    <PostCard key={index} post={post} index={index} />
-                ))}
-                {load && (
-                    <img alt="Loading..." />
-                )}
+                {homePosts.result === 0 ?
+                    <h4 className="text-center w-100 py-4">Không có bài đăng nào</h4>
+                    : (
+                        <>
+                        {homePosts.posts.map((post, index) => (
+                            <PostCard key={index} post={post} index={index} />
+                        ))}
+                        {load && (
+                            <img alt="Loading..." />
+                        )}
+                        </>
+                    )}
 
                 <LoadMoreBtn
                     result={homePosts.result}

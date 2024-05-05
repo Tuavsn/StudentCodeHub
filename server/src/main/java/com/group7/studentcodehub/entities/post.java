@@ -32,6 +32,8 @@ public class post {
 	@ManyToOne
 	private user user;
 	@Column(columnDefinition = "TEXT")
+	private String header;
+	@Column(columnDefinition = "TEXT")
 	private String content;
 	private int status;
 	@OneToMany(mappedBy = "post")

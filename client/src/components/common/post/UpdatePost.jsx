@@ -8,6 +8,7 @@ const UpdatePost = () => {
     const { auth, homePosts } = useSelector((state) => state)
     const dispatch = useDispatch()
     const editorRef = useRef(null);
+    const [headerInput, setHeaderInput] = useState('');
     const [editorData, setEditorData] = useState('');
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
@@ -20,6 +21,7 @@ const UpdatePost = () => {
             const editor = editorRef.current.editor
             if(homePosts.currentPost && editor) {
                 editor.setData(homePosts.currentPost.content)
+                setHeaderInput(homePosts.currentPost.header)
                 setEditorData(homePosts.currentPost.content)
                 setOldImagePreviews(homePosts.currentPost.postImage)
             }
@@ -43,6 +45,12 @@ const UpdatePost = () => {
         fileInput.value = '';
     }
 
+    const handleHeaderInputChange = (e) => {
+        e.preventDefault();
+        const data = e.target.value
+        setHeaderInput(data)
+    }
+
     const handleEditorChange = (e, editor) => {
         const data = editor.getData()
         setEditorData(data);
@@ -50,14 +58,17 @@ const UpdatePost = () => {
 
     const handleButtonClick = (e) => {
         e.preventDefault()
-        dispatch(updatePost({post: homePosts.currentPost ,postImages: selectedFiles, content: editorData, isNewImage: isNewImage, auth: auth}))
+        dispatch(updatePost({post: homePosts.currentPost, header: headerInput , postImages: selectedFiles, content: editorData, isNewImage: isNewImage, auth: auth}))
         setSelectedFiles([]);
         setImagePreviews([]);
         const fileInput = document.getElementById('fileUpdateInput');
+        const header = document.getElementById('updateHeaderInput');
         const editor = editorRef.current.editor;
         if(fileInput) fileInput.value = '';
         editor.setData('')
+        header.value = '';
         setEditorData('')
+        setHeaderInput('')
         setIsNewImage(false)
     }
 
@@ -67,10 +78,13 @@ const UpdatePost = () => {
         setImagePreviews([]);
         setIsNewImage(false);
         const fileInput = document.getElementById('fileUpdateInput');
+        const header = document.getElementById('updateHeaderInput');
         if(fileInput) fileInput.value = '';
         const editor = editorRef.current.editor;
         editor.setData('');
+        header.value = '';
         setEditorData('');
+        setHeaderInput('')
     }
 
     return (
@@ -122,6 +136,8 @@ const UpdatePost = () => {
                                     </div>
                                 </>
                             )}
+                            <h4>Tiêu đề</h4>
+                            <input id="updateHeaderInput" className="mb-2 mb-3 p-2 w-100" type="text" onChange={(e) => handleHeaderInputChange(e)} value={headerInput}></input>
                             <h4>Nội dung</h4>
                             <CKEditor
                                 editor={ClassicEditor}

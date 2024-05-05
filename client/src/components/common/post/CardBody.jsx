@@ -9,14 +9,14 @@ const CardBody = ({ post, index }) => {
     return (
         <div className="card-body" style={{ borderRadius: "1rem", marginTop: "1rem"}}>
             {post.postImage.length > 0 && (
-                <div className="d-flex align-items-center justify-content-center" style={{minHeight: "250px", backgroundColor: "#FFF", marginBottom: "1rem"}}>
+                <div className="d-flex align-items-center justify-content-center" style={{minHeight: "200px", backgroundColor: "#FFF", marginBottom: "1rem"}}>
                     {post.postImage.length > 1 ? (
                         <div className="w-100">
                             <div id={`carouselExample${index}`} className="carousel carousel-dark slide">
                                 <div className="carousel-inner">
                                     {post.postImage.map((image, index) => (
                                         <div key={index} className={`carousel-item ${index===0 ? 'active' : ''}`} style={{textAlign: "center"}}>
-                                            <img src={`${imageApiUrl}/${image.imageUrl}`} style={{maxWidth: "100%", height: "600px", objectFit: "contain"}} alt="..." />
+                                            <img src={`${imageApiUrl}/${image.imageUrl}`} style={{maxWidth: "100%", height: "400px", objectFit: "contain"}} alt="..." />
                                         </div>
                                     ))}
                                 </div>
@@ -30,11 +30,11 @@ const CardBody = ({ post, index }) => {
                         </button>
                         </div>
                 </div>
-                ) : <img src={`${imageApiUrl}/${post.postImage[0].imageUrl}`} style={{maxWidth: "100%", height: "600px", objectFit: "contain"}} />}
+                ) : <img src={`${imageApiUrl}/${post.postImage[0].imageUrl}`} style={{maxWidth: "100%", height: "400px", objectFit: "contain"}} />}
                 </div>
             )}
             
-            {post.content.length < 250 ? 
+            {post.content.length < 900 ? 
                 <div dangerouslySetInnerHTML={{__html: post.content}}></div>
                 : readMore.includes(post.id) ? 
                 <div>
@@ -42,7 +42,7 @@ const CardBody = ({ post, index }) => {
                     <a href="#" onClick={() => setReadMore(readMore.filter(id => id !== post.id))}>Thu gọn</a>
                 </div>
                 : <div>
-                    <div dangerouslySetInnerHTML={{__html: post.content.slice(0, 250) + '<br>...</br>'}}></div>
+                    <div dangerouslySetInnerHTML={{__html: post.content.slice(0, 900) + '<br>...</br>'}}></div>
                     <a href="#" onClick={() => setReadMore([...readMore, post.id])}>Xem thêm</a>
                 </div>}
         </div>

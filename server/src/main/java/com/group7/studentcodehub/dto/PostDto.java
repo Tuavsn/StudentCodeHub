@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PostDto {
 	private List<String> imageList;
-	private String Content;
+	private String header;
+	private String content;
 	private Boolean isNewImage;
 }

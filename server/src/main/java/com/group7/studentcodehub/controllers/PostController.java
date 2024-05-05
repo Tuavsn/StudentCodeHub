@@ -40,7 +40,7 @@ public class PostController {
 			HttpServletRequest request
 	) throws IOException, Exception {
 		java.util.Map<String, Object> response = new java.util.HashMap<>();
-		post newPost = postService.createPost(post.getContent(), post.getImageList(), request);
+		post newPost = postService.createPost(post.getHeader(), post.getContent(), post.getImageList(), request);
 		response.put("msg", "Success");
 		response.put("newPost", newPost);
 		return ResponseEntity.ok(response);
@@ -112,9 +112,8 @@ public class PostController {
 			@RequestBody PostDto post,
 			HttpServletRequest request
 	) throws IOException, Exception {
-		System.out.println(post.getIsNewImage());
 		java.util.Map<String, Object> response = new java.util.HashMap<>();
-		post newPost = postService.updatePost(postId, post.getContent(), post.getImageList(), post.getIsNewImage(), request);
+		post newPost = postService.updatePost(postId, post.getHeader(), post.getContent(), post.getImageList(), post.getIsNewImage(), request);
 		response.put("msg", "Success");
 		response.put("newPost", newPost);
 		return ResponseEntity.ok(response);
