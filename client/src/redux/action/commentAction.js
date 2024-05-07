@@ -1,10 +1,10 @@
 import { GLOBALTYPES } from "./globalTypes"
 import { POST_TYPES } from "./postAction"
 import { postDataAPI, deleteDataAPI } from "../../utils/fetchData"
+import { createNotify } from "./notifyAction"
 import { sendMessage } from "./socketAction"
 
 export const createComment = ({post, newComment, auth, type}) => async(dispatch) => {
-    const newPost = {...post, postComment: [...post.postComment, newComment]}
 
     try {
         dispatch({ type: GLOBALTYPES.LOADING, payload: true })
@@ -19,6 +19,13 @@ export const createComment = ({post, newComment, auth, type}) => async(dispatch)
         const newPost = { ...post, postComment: [...post.postComment, newData]}
 
         dispatch(sendMessage('/app/comment', newPost))
+
+        const msg = {
+            target: post.user, 
+            content: `${auth.user.fullName} vừa bình luận vào bài post của bạn`, 
+            link: `/post/${post.id}`
+        }
+        dispatch(createNotify(msg, auth))
 
         if(type === "profilePost") {
             dispatch({type: POST_TYPES.UPDATE_PROFILE_POST, payload: newPost})

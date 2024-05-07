@@ -8,6 +8,7 @@ import { GLOBALTYPES } from "./redux/action/globalTypes";
 import { setSocketService } from "./redux/action/socketAction";
 import { POST_TYPES } from "./redux/action/postAction";
 import { MESSAGE_TYPES } from "./redux/action/messageAction";
+import { NOTIFY_TYPES } from "./redux/action/notifyAction";
 import { getConversations } from "./redux/action/messageAction";
 
 const SocketClient = ({ children }) => {
@@ -25,6 +26,7 @@ const SocketClient = ({ children }) => {
         stompClient.subscribe('/message')
         if(auth.user) {
             stompClient.subscribe(`/user/${auth.user.id}/message`, getCurrentMessages)
+            stompClient.subscribe(`/user/${auth.user.id}/notify`, getCurrentNotifies)
         }
         userJoin()
     }
@@ -33,6 +35,14 @@ const SocketClient = ({ children }) => {
     const getActiveUser = (payload) => {
         dispatch({
             type: MESSAGE_TYPES.GET_ACTIVE_USER,
+            payload: JSON.parse(payload.body)
+        })
+    }
+
+    //!CurrentNotifies
+    const getCurrentNotifies = (payload) => {
+        dispatch({
+            type: NOTIFY_TYPES.CREATE_NOTIFY,
             payload: JSON.parse(payload.body)
         })
     }
@@ -77,7 +87,7 @@ const SocketClient = ({ children }) => {
     const getConnect = async () => {
         const Sock = new SockJS(`${socketApiUrl}`)
         stompClient = over(Sock)
-        stompClient.debug = null
+        // stompClient.debug = null
         await stompClient.connect({}, onConnected, onError)
         return () => {
             if(stompClient) {

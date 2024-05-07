@@ -6,6 +6,7 @@ import alert from './alertReducer'
 import socket from './socketReducer'
 import homePosts from './postReducer'
 import userMessage from './messageReducer'
+import notify from './notifyReducer'
 
 export default combineReducers({
     auth,
@@ -14,4 +15,5 @@ export default combineReducers({
     alert,
     homePosts,
     userMessage,
+    notify
 })

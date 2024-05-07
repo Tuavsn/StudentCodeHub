@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { logout } from "../../redux/action/authAction"
+import { getConversations, getMessages} from "../../redux/action/messageAction"
+import { getExplorePosts, getHomePosts } from "../../redux/action/postAction"
+import { getNotifies } from "../../redux/action/notifyAction"
 import Logo from "../../images/icon.png"
 import Posts from "../common/post/Posts"
 import UserProfile from "./userProfile/UserProfile"
@@ -8,19 +11,26 @@ import RightSideBar from "../common/rightSideBar/RightSideBar"
 import InputPost from "../common/post/InputPost"
 import UpdatePost from "../common/post/UpdatePost"
 import Chat from "../common/chat/Chat"
-import { getConversations, getMessages} from "../../redux/action/messageAction";
 import Search from "../common/search/Search"
-import { getExplorePosts, getHomePosts } from "../../redux/action/postAction"
+import Notify from "../common/notify/Notify"
 
 const LeftSideBar = () => {
     const [userMenu, setUserMenu] = useState(1)
-    const { auth, userMessage } = useSelector((state) => state)
+    const { auth, userMessage, notify } = useSelector((state) => state)
     const dispatch = useDispatch()
 
+    // Reload if received new messages 
     useEffect(() => {
         
     }, [userMessage.messages, userMessage.recipients])
 
+    // First load notifies
+    useEffect(() => {
+        if(notify.data.length > 0) return ;
+        dispatch(getNotifies(auth))
+    }, [])
+
+    // First load messages
     useEffect(() => {
         if(userMessage.messages.length > 0) return ;
         userMessage.recipients.map((recipient) => {
@@ -28,11 +38,13 @@ const LeftSideBar = () => {
         })
       },[dispatch, auth, userMessage.recipients])
     
+    // First load conservation
     useEffect(() => {
     if(userMessage.firstLoad) return ;
     dispatch(getConversations(auth))
     },[dispatch, auth, userMessage.firstLoad])
 
+    // First load Post
     useEffect(() => {
         if(userMenu === 1) {
             dispatch(getHomePosts(auth.token))
@@ -79,6 +91,11 @@ const LeftSideBar = () => {
                         <a href="#" style={{ padding: "1rem" }} className={`nav-link ${userMenu === 4 ? "active" : "link-dark"}`} onClick={(e) => { e.preventDefault(); setUserMenu(4) }}>
                             <i className="fa-regular fa-bell" style={{ fontSize: "1.4rem", paddingRight: "30px" }}></i>
                             Thông báo
+                            {notify.data.filter(item => {return item.target.id === auth.user.id && item.status === 0}).length > 0 ? (
+                                <i className="fa-solid fa-circle-info px-2 text-danger" style={{fontSize: "1rem", opacity: .8}}></i>
+                            ):(
+                                <></>
+                            )}
                         </a>
                     </li>
                     <li>
@@ -130,7 +147,7 @@ const LeftSideBar = () => {
                 </>
             )}
             {userMenu === 3 && <Chat />}
-            {userMenu === 4 }
+            {userMenu === 4 && <Notify />}
             {userMenu === 5 }
             {userMenu === 6 && <UserProfile />}
         </>

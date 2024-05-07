@@ -1,5 +1,6 @@
 import { deleteDataAPI, getDataAPI, patchDataAPI, postDataAPI } from "../../utils/fetchData";
 import { GLOBALTYPES } from "./globalTypes";
+import { createNotify } from "./notifyAction";
 import { sendMessage } from "./socketAction";
 
 export const POST_TYPES = {
@@ -18,7 +19,7 @@ export const POST_TYPES = {
     GET_DETAIL_POST: "GET_POST"
 }
 
-export const createPost = ({ postImages, header, content, auth }) => async dispatch => {
+export const createPost = ({ postImages, content, auth }) => async dispatch => {
     try {
     dispatch({ type: GLOBALTYPES.LOADING, payload: true })
 
@@ -35,7 +36,16 @@ export const createPost = ({ postImages, header, content, auth }) => async dispa
 
     }
 
-    const res = await postDataAPI('posts', {imageList, header, content} , auth.token)
+    const res = await postDataAPI('posts', {imageList, content} , auth.token)
+
+    auth.followers.forEach((item) => {
+        var msg = {
+            target: item.source, 
+            content: 'Người bạn theo dõi vừa thêm bài post mới', 
+            link: `/post/${res.data.newPost.id}`
+        }
+        dispatch(createNotify(msg, auth))
+    })
     
     dispatch({ type: POST_TYPES.CREATE_POST, payload: {...res.data.newPost, user: auth.user }})
     dispatch({ type: GLOBALTYPES.LOADING, payload: false })
@@ -94,7 +104,7 @@ export const getExplorePosts = (token) => async dispatch => {
     }
 }
 
-export const updatePost = ({ post, header, content, postImages, isNewImage, auth, type }) => async dispatch => {
+export const updatePost = ({ post, content, postImages, isNewImage, auth, type }) => async dispatch => {
     try {
         dispatch({ type: GLOBALTYPES.LOADING, payload: true })
     
@@ -113,11 +123,11 @@ export const updatePost = ({ post, header, content, postImages, isNewImage, auth
             imageList = await (await postDataAPI('images/save', formData, auth.token)).data.images
         }
         
-        res = await patchDataAPI(`post/${post.id}`, {imageList, header, content, isNewImage}, auth.token)
+        res = await patchDataAPI(`post/${post.id}`, {imageList, content, isNewImage}, auth.token)
 
         imageList = []
 
-        if(post.postImage.length > 0 && isNewImage) {
+        if(post.postImage.length > 0) {
             //delete previous image 
             await post.postImage.forEach(image => {
                 imageList.push(image.imageUrl)
@@ -125,6 +135,15 @@ export const updatePost = ({ post, header, content, postImages, isNewImage, auth
             
             await deleteDataAPI(`images/${imageList}`)
         }
+
+        auth.followers.forEach((item) => {
+            var msg = {
+                target: item.source, 
+                content: 'Người bạn theo dõi vừa chỉnh sửa một bài post', 
+                link: `/post/${res.data.newPost.id}`
+            }
+            dispatch(createNotify(msg, auth))
+        })
 
         if(type === "detailPost") {
             dispatch({ type: POST_TYPES.UPDATE_DETAIL_POST, payload: {...res.data.newPost}})
@@ -174,6 +193,13 @@ export const likePost = ({ post, auth, type }) => async dispatch => {
     try {
         await patchDataAPI(`post/${post.id}/like`, null, auth.token)
         dispatch(sendMessage('/app/like', newPost))
+
+        const msg = {
+            target: post.user, 
+            content: `${auth.user.fullName} vừa like bài post của bạn`, 
+            link: `/post/${post.id}`
+        }
+        dispatch(createNotify(msg, auth))
     } catch (err) {
         dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: err.response.data.msg })
         dispatch({ type: GLOBALTYPES.LOADING, payload: false })
@@ -207,5 +233,3 @@ export const reportPost = () => async dispatch => {
         dispatch({ type: GLOBALTYPES.LOADING, payload: false })
     }
 }
-
-

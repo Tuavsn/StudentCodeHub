@@ -9,6 +9,8 @@ import Regist from './pages/Regist';
 import Alert from './components/common/alert/Alert';
 import SocketClient from './SocketClient'
 import Loading from './components/common/alert/Loading'
+import UserProfileDetail from './pages/UserProfileDetail'
+import PostDetail from './pages/PostDetail'
 import { getUserInfo } from './redux/action/authAction'
 
 function App() {
@@ -37,6 +39,8 @@ function App() {
                   auth.token ? AdminHome : Login
                   : auth.token ? UserHome : Login} />
                 <Route exact path='/regist' Component={Regist} />
+                <Route exact path='/user/:id' Component={UserProfileDetail} />
+                <Route exact path='/post/:id' Component={PostDetail}/>
               </Routes>
 
           </div>

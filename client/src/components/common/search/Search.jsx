@@ -25,8 +25,11 @@ const Search = () => {
     }
 
     const handleSearchUser = async(userFullName) => {
-        const res = await getDataAPI(`user/search/${userFullName}`, auth.token)
-        setUserSearchResult(res.data)
+        var regex = /^ /;
+        if(!regex.test(userFullName)) {
+            const res = await getDataAPI(`user/search/${userFullName}`, auth.token)
+            setUserSearchResult(res.data)
+        }
     }
 
     const getSuggestionUsers = async() => {
