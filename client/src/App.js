@@ -11,7 +11,9 @@ import SocketClient from './SocketClient'
 import Loading from './components/common/alert/Loading'
 import UserProfileDetail from './pages/UserProfileDetail'
 import PostDetail from './pages/PostDetail'
+import PrivateRouter from './router/PrivateRouter'
 import { getUserInfo } from './redux/action/authAction'
+import { getCodeExerCises, getQueueCodeExercises } from './redux/action/codeExerciseAction'
 
 function App() {
   const { auth, userType } = useSelector((state) => state)
@@ -23,6 +25,13 @@ function App() {
       setIsRefreshed(true)
     })
   }, [dispatch])
+
+  useEffect(() => {
+    if (auth.token) {
+      dispatch(getCodeExerCises(auth.token))
+      dispatch(getQueueCodeExercises(auth.token))
+    }
+  }, [dispatch, auth.token])
 
   if (!isRefreshed) {
     return <Loading />;
@@ -41,6 +50,13 @@ function App() {
                 <Route exact path='/regist' Component={Regist} />
                 <Route exact path='/user/:id' Component={UserProfileDetail} />
                 <Route exact path='/post/:id' Component={PostDetail}/>
+                {(userType === "ADMIN" || userType === "USER") && (
+                  <>
+                    <Route exact path="/:page" Component={<PrivateRouter />} />
+                    <Route exact path="/:page/:id" Component={() => <PrivateRouter path="/:page/:id" />} />
+                    <Route exact path="/:page/:id/:action" Component={() => <PrivateRouter path="/:page/:id/:action" />} />
+                  </>
+                )}
               </Routes>
 
           </div>

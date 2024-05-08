@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { logout } from "../../../redux/action/authAction"
+import { getConversations, getMessages} from "../../../redux/action/messageAction";
+import { getNotifies } from "../../../redux/action/notifyAction";
+import { getHomePosts, getExplorePosts } from "../../../redux/action/postAction"
 import Logo from "../../../images/icon.png"
 import Main from "../main/Main"
 import UserManagement from "../userManagement/UserManagement"
@@ -12,10 +15,8 @@ import InputPost from "../../common/post/InputPost"
 import UpdatePost from "../../common/post/UpdatePost"
 import Chat from "../../common/chat/Chat"
 import Notify from "../../common/notify/Notify"
-import { getConversations, getMessages} from "../../../redux/action/messageAction";
-import { getNotifies } from "../../../redux/action/notifyAction";
-import { getHomePosts, getExplorePosts } from "../../../redux/action/postAction"
 import Search from "../../common/search/Search"
+import PracticeLanding from "../../common/codePractice/PracticeLanding"
 
 const LeftSideBar = () => {
     const [adminMenu, setAdminMenu] = useState(1)
@@ -169,6 +170,7 @@ const LeftSideBar = () => {
             )}
             {adminMenu === 3 && <Chat />}
             {adminMenu === 4 && <Notify />}
+            {adminMenu === 5 && <PracticeLanding />}
             {adminMenu === 6 && <Search />}
             {adminMenu === 7 && <Main />}
             {adminMenu === 8 && <UserManagement />}

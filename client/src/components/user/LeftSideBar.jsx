@@ -13,6 +13,7 @@ import UpdatePost from "../common/post/UpdatePost"
 import Chat from "../common/chat/Chat"
 import Search from "../common/search/Search"
 import Notify from "../common/notify/Notify"
+import PracticeLanding from "../common/codePractice/PracticeLanding"
 
 const LeftSideBar = () => {
     const [userMenu, setUserMenu] = useState(1)
@@ -148,7 +149,7 @@ const LeftSideBar = () => {
             )}
             {userMenu === 3 && <Chat />}
             {userMenu === 4 && <Notify />}
-            {userMenu === 5 }
+            {userMenu === 5 && <PracticeLanding />}
             {userMenu === 6 && <UserProfile />}
         </>
     )

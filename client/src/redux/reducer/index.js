@@ -8,6 +8,7 @@ import homePosts from './postReducer'
 import userMessage from './messageReducer'
 import notify from './notifyReducer'
 import admin from './adminReducer'
+import codeExercises from './codeExerciseReducer'
 
 export default combineReducers({
     admin,
@@ -17,5 +18,6 @@ export default combineReducers({
     alert,
     homePosts,
     userMessage,
-    notify
+    notify,
+    codeExercises
 })
