@@ -5,11 +5,12 @@ import SockJS from "sockjs-client";
 
 import audioTone from "./audio/pristine-609.mp3"
 import { GLOBALTYPES } from "./redux/action/globalTypes";
-import { setSocketService } from "./redux/action/socketAction";
 import { POST_TYPES } from "./redux/action/postAction";
 import { MESSAGE_TYPES } from "./redux/action/messageAction";
 import { NOTIFY_TYPES } from "./redux/action/notifyAction";
+import { ADMIN_TYPES } from "./redux/action/adminAction";
 import { getConversations } from "./redux/action/messageAction";
+import { setSocketService } from "./redux/action/socketAction";
 
 const SocketClient = ({ children }) => {
     const { auth } = useSelector((state) => state)
@@ -35,6 +36,10 @@ const SocketClient = ({ children }) => {
     const getActiveUser = (payload) => {
         dispatch({
             type: MESSAGE_TYPES.GET_ACTIVE_USER,
+            payload: JSON.parse(payload.body)
+        })
+        dispatch({
+            type: ADMIN_TYPES.GET_TOTAL_ACTIVE_USERS,
             payload: JSON.parse(payload.body)
         })
     }
@@ -87,7 +92,7 @@ const SocketClient = ({ children }) => {
     const getConnect = async () => {
         const Sock = new SockJS(`${socketApiUrl}`)
         stompClient = over(Sock)
-        // stompClient.debug = null
+        stompClient.debug = null
         await stompClient.connect({}, onConnected, onError)
         return () => {
             if(stompClient) {

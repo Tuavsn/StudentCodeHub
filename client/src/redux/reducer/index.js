@@ -7,8 +7,10 @@ import socket from './socketReducer'
 import homePosts from './postReducer'
 import userMessage from './messageReducer'
 import notify from './notifyReducer'
+import admin from './adminReducer'
 
 export default combineReducers({
+    admin,
     auth,
     userType,
     socket,
