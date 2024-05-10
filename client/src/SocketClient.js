@@ -8,7 +8,6 @@ import { GLOBALTYPES } from "./redux/action/globalTypes";
 import { POST_TYPES } from "./redux/action/postAction";
 import { MESSAGE_TYPES } from "./redux/action/messageAction";
 import { NOTIFY_TYPES } from "./redux/action/notifyAction";
-import { ADMIN_TYPES } from "./redux/action/adminAction";
 import { getConversations } from "./redux/action/messageAction";
 import { setSocketService } from "./redux/action/socketAction";
 
@@ -38,10 +37,6 @@ const SocketClient = ({ children }) => {
             type: MESSAGE_TYPES.GET_ACTIVE_USER,
             payload: JSON.parse(payload.body)
         })
-        dispatch({
-            type: ADMIN_TYPES.GET_TOTAL_ACTIVE_USERS,
-            payload: JSON.parse(payload.body)
-        })
     }
 
     //!CurrentNotifies
@@ -49,6 +44,10 @@ const SocketClient = ({ children }) => {
         dispatch({
             type: NOTIFY_TYPES.CREATE_NOTIFY,
             payload: JSON.parse(payload.body)
+        })
+        dispatch({
+           type: GLOBALTYPES.NOTIFY_ALERT,
+           payload: JSON.parse(payload.body).content
         })
     }
 

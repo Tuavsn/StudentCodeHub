@@ -59,7 +59,7 @@ public class AuthenticationService {
 				.email(request.getEmail())
 				.password(passwordEncoder.encode(request.getPassword()))
 				.role("USER")
-				.avatar("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png")
+				.avatar("blank-profile-picture-973460__340.webp")
 				.build();
 		var savedUser = userRepository.save(User);
 		var jwtToken = jwtService.generateToken(User);

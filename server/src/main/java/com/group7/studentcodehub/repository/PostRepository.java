@@ -20,4 +20,6 @@ public interface PostRepository extends JpaRepository<post, Integer>{
 	           "WHERE uf.source.id = :userId "
 			   + "OR u.id = :userId")
 	List<post> findAllByFollower(int userId);
+	@Query("SELECT MONTH(p.createAt), COUNT(p.id) FROM post p GROUP BY MONTH(p.createAt)")
+	List<Object[]> getTotalPostPerMonth();
 }

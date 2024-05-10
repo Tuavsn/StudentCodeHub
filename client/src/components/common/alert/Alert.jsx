@@ -26,6 +26,14 @@ const Alert = () => {
                     bgColor="bg-success" 
                 />
             )}
+
+            { alert.notify && (
+                <Toast
+                    msg={{ title: "Bạn có một thông báo mới!", body: alert.notify }}
+                    handleShow={() => dispatch({ type: GLOBALTYPES.RESET_ALERT })}
+                    bgColor="bg-success" 
+                />
+            )}
         </div>
     )
 }

@@ -1,11 +1,11 @@
 import React from "react";
-import { Route, Navigate } from "react-router-dom"
+import { Navigate } from "react-router-dom";
+import PageRender from "./PageRender";
 
-const PrivateRouter = (props) => {
+const PrivateRouter = ({ path }) => {
+    const firstLogin = localStorage.getItem('firstLogin');
 
-    const firstLogin = localStorage.getItem('firstLogin')
+    return firstLogin ? <PageRender /> : <Navigate to="/" />;
+};
 
-    return firstLogin ? <Route {...props} /> : <Navigate to="/" />
-}
-
-export default PrivateRouter
+export default PrivateRouter;

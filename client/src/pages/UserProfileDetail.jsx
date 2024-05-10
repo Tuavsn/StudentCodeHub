@@ -4,8 +4,9 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { getProfilePosts } from "../redux/action/postAction";
 import { useParams } from "react-router-dom";
 import { getDataAPI, postDataAPI } from "../utils/fetchData";
-import PostCard from "../components/common/post/PostCard";
 import { getUserInfo } from "../redux/action/authAction";
+import PostCard from "../components/common/post/PostCard";
+import postlogo from "../images/post.png";
 
 const UserProfileDetail = () => {
     const { homePosts, auth } = useSelector((state) => state)
@@ -13,6 +14,7 @@ const UserProfileDetail = () => {
     const [user, setUser] = useState(null)
     const navigate = useNavigate()
     const {id} = useParams();
+    const imageApiUrl = process.env.REACT_APP_IMAGE_URL
 
     const getUserData = async () => {
         const res = await getDataAPI(`user/${id}`, auth.token)
@@ -45,12 +47,12 @@ const UserProfileDetail = () => {
                                 <div className="card-body p-4">
                                     <div className="d-flex text-black">
                                     <div className="flex-shrink-0">
-                                        <img src={user.avatar}
+                                        <img src={`${imageApiUrl}/${user.avatar}`}
                                         alt="Generic placeholder image" className="img-fluid"
                                         style={{width: "180px", borderRadius: "10px"}} />
                                     </div>
                                     <div className="flex-grow-1 ms-3">
-                                        <h5 className="mb-1">{user.fullName}</h5>
+                                        <h3 className="mb-1">{user.fullName}</h3>
                                         <p className="mb-2 pb-1" style={{color: "#2b2a2a"}}>{user.userName}</p>
                                         <div className="d-flex justify-content-start rounded-3 p-2 mb-2"
                                         style={{backgroundColor: "#efefef"}}>
@@ -72,8 +74,8 @@ const UserProfileDetail = () => {
                                         </div>
                                         </div>
                                         <div className="d-flex pt-1">
-                                            <button type="button" className="btn btn-primary me-1 flex-grow-1">Đánh giá</button>
-                                            <button type="button" className="btn btn-outline-primary flex-grow-1">Tố cáo</button>
+                                            {/* <button type="button" className="btn btn-primary me-1 flex-grow-1">Đánh giá</button>
+                                            <button type="button" className="btn btn-outline-primary flex-grow-1">Tố cáo</button> */}
                                         </div>
                                         {id != auth.user.id ? 
                                         (<>
@@ -94,6 +96,10 @@ const UserProfileDetail = () => {
                     </div>
                     <div className="row" style={{width: "100%"}}>
                         <div className="d-flex flex-column" style={{maxWidth: "1000px", margin: "auto"}}>
+                            <div className="mt-4 d-flex gap-2 align-items-center">
+                                <img style={{width: "2.4rem", objectFit: "contain"}} src={postlogo}/>
+                                <h4 className="flex-grow-1 m-0">Danh sách bài đăng:</h4>
+                            </div>
                             {homePosts.profilePosts.map((post, index) => (
                                 <PostCard key={index} post={post} type={"profilePost"}/>
                             ))}

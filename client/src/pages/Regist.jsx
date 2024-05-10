@@ -86,7 +86,7 @@ const Regist = () => {
                                 <form onSubmit={handleSubmit}>
                                     {/* fullname input */}
                                     <div className="form-outline mb-4 mt-4">
-                                        <label className="form-label" htmlFor="InputFullname" style={{ fontWeight: "bold", color: "#2F56A6" }}>Tên tài khoản</label>
+                                        <label className="form-label" htmlFor="InputFullname" style={{ fontWeight: "bold", color: "#2F56A6" }}>Tên hiển thị</label>
                                         <input type="text" id="InputFullname" onChange={handleChangeInput} value={fullName} name="fullName" className="form-control form-control-lg"
                                             placeholder="Nhập tên đầy đủ của bạn" />
                                         {errors.fullName && <small style={{fontWeight: "bold"}} className="text-danger">{errors.fullName}</small>}
@@ -94,7 +94,7 @@ const Regist = () => {
 
                                     {/* username input */}
                                     <div className="form-outline mb-4">
-                                        <label className="form-label" htmlFor="InputUsername" style={{ fontWeight: "bold", color: "#2F56A6" }}>Tên đăng nhập</label>
+                                        <label className="form-label" htmlFor="InputUsername" style={{ fontWeight: "bold", color: "#2F56A6" }}>Tên tài khoản</label>
                                         <input type="text" id="InputUsername" onChange={handleChangeInput} value={userName} name="userName" className="form-control form-control-lg"
                                             placeholder="Nhập tài khoản của bạn" />
                                         {errors.userName && <small style={{fontWeight: "bold"}} className="text-danger">{errors.userName}</small>}

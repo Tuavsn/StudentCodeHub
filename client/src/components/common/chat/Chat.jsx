@@ -11,6 +11,7 @@ const Chat = () => {
     const [searchUser, setSearchUser] = useState()
     const [currentRecipient, setCurrentRecipient] = useState(null)
     const [isHover, setIsHover] = useState(null)
+    const imageApiUrl = process.env.REACT_APP_IMAGE_URL
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
@@ -64,7 +65,7 @@ const Chat = () => {
                                         )
                                     }
                                     <div className="d-flex align-items-start">
-                                        <img style={{objectFit: "cover"}} src={recipient.avatar} className="rounded-circle mr-1" alt="Vanessa Tucker" width="40" height="40"/>
+                                        <img style={{objectFit: "cover"}} src={`${imageApiUrl}/${recipient.avatar}`} className="rounded-circle mr-1" alt="Vanessa Tucker" width="40" height="40"/>
                                         <div className="flex-grow-1 ml-3">
                                             {recipient.fullName}
                                             {isActiveUser(recipient.id) ? (
@@ -89,7 +90,7 @@ const Chat = () => {
                             <div className="py-2 px-4 border-bottom d-none d-lg-block" style={{position: "sticky", top: 0, left: 0, right: 0, backgroundColor: "#fff", zIndex: 1}}>
                                 <div className="d-flex align-items-center py-1">
                                     <div className="position-relative h-100">
-                                        <img style={{objectFit: "cover"}} src={currentRecipient.avatar} className="rounded-circle mr-1" alt="Sharon Lessman" width="40" height="40"/>
+                                        <img style={{objectFit: "cover"}} src={`${imageApiUrl}/${currentRecipient.avatar}`} className="rounded-circle mr-1" alt="Sharon Lessman" width="40" height="40"/>
                                     </div>
                                     <div className="flex-grow-1 pl-3">
                                         <strong className={`${isHover === currentRecipient.id ? 'text-primary': ''}`} 
@@ -125,20 +126,20 @@ const Chat = () => {
                                 <h5>Followers</h5>
                                 {auth.followers.map((item, index) => (
                                     <div key={index} style={{cursor: "pointer", display: "flex", alignItems: "center", gap: "2rem", margin: "1rem"}} data-bs-dismiss="modal" onClick={() => handleAddUserMessage(item.source)}>
-                                        <img src={item.source.avatar} style={{width: "2rem", height: "2rem", borderRadius: "10%", objectFit: "cover"}} />
+                                        <img src={`${imageApiUrl}/${item.source.avatar}`} style={{width: "2rem", height: "2rem", borderRadius: "10%", objectFit: "cover"}} />
                                         {item.source.fullName}
                                     </div>
                                 ))}
                                 <h5>Following</h5>
                                 {auth.following.map((item, index) => (
                                     <div key={index} style={{cursor: "pointer", display: "flex", alignItems: "center", gap: "2rem", margin: "1rem"}} data-bs-dismiss="modal" onClick={() => handleAddUserMessage(item.target)}>
-                                        <img src={item.target.avatar} style={{width: "2rem", height: "2rem", borderRadius: "10%", objectFit: "cover"}} />
+                                        <img src={`${imageApiUrl}/${item.target.avatar}`} style={{width: "2rem", height: "2rem", borderRadius: "10%", objectFit: "cover"}} />
                                         {item.target.fullName}
                                     </div>
                                 ))}
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Huỷ</button>
+                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
                             </div>
                         </div>
                     </div>

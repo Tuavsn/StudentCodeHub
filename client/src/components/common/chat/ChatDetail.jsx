@@ -17,6 +17,8 @@ const ChatDetail = ({recipient}) => {
 
     const messagesContainerRef = useRef(null);
 
+    const imageApiUrl = process.env.REACT_APP_IMAGE_URL
+
     moment.locale('vi')
 
     const handleInputChange = (e) => {
@@ -53,7 +55,7 @@ const ChatDetail = ({recipient}) => {
                     }).map((filterMessage, index) => (
                         <div key={index} className={`${filterMessage.source.id === auth.user.id ? 'chat-message-right' : 'chat-message-left'} pb-4 align-items-start w-100`}>
                             <div>
-                                <img style={{objectFit: "cover"}} src={filterMessage.source.avatar} className="rounded-circle mr-1" alt="Chris Wood" width="40" height="40"/>
+                                <img style={{objectFit: "cover"}} src={`${imageApiUrl}/${filterMessage.source.avatar}`} className="rounded-circle mr-1" alt="Chris Wood" width="40" height="40"/>
                             </div>
                             <div 
                             className={`bg-light rounded py-2 px-3 mr-3 ${filterMessage.source.id === auth.user.id ? 'text-end' : 'text-start'}`}

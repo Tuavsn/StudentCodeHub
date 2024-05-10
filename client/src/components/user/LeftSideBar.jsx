@@ -18,6 +18,7 @@ import PracticeLanding from "../common/codePractice/PracticeLanding"
 const LeftSideBar = () => {
     const [userMenu, setUserMenu] = useState(1)
     const { auth, userMessage, notify } = useSelector((state) => state)
+    const imageApiUrl = process.env.REACT_APP_IMAGE_URL
     const dispatch = useDispatch()
 
     // Reload if received new messages 
@@ -115,7 +116,7 @@ const LeftSideBar = () => {
                 <hr />
                 <div className="dropdown">
                     <a href="#" className="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src={auth.user.avatar} alt="" width="40" height="40" className="rounded me-2 object-fit-cover" />
+                        <img src={`${imageApiUrl}/${auth.user.avatar}`} alt="" width="40" height="40" className="rounded me-2 object-fit-cover" />
                         <strong>{auth.user.fullName}</strong>
                     </a>
                     <ul className="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">

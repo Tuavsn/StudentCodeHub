@@ -74,7 +74,7 @@ const Login = () => {
 
                             {/* username input */}
                             <div className="form-outline mb-4 mt-4">
-                                <label className="form-label" htmlFor="InputUsername" style={{fontWeight: "bold", color: "#2F56A6"}}>Tên đăng nhập</label>
+                                <label className="form-label" htmlFor="InputUsername" style={{fontWeight: "bold", color: "#2F56A6"}}>Tên tài khoản</label>
                                 <input type="text" id="InputUsername" onChange={handleChangeInput} value={userName} name="userName" className="form-control form-control-lg"
                                 placeholder="Nhập username của bạn" />
                                 {errors.userName && <small style={{fontWeight: "bold"}} className="text-danger">{errors.userName}</small>}

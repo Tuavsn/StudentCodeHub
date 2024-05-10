@@ -21,6 +21,7 @@ import PracticeLanding from "../../common/codePractice/PracticeLanding"
 const LeftSideBar = () => {
     const [adminMenu, setAdminMenu] = useState(1)
     const { auth, homePosts, userMessage, notify } = useSelector((state) => state)
+    const imageApiUrl = process.env.REACT_APP_IMAGE_URL
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -122,17 +123,17 @@ const LeftSideBar = () => {
                             Quản lý tài khoản
                         </a>
                     </li>
-                    <li>
+                    {/* <li>
                         <a href="#" style={{ padding: "1rem" }} className={`nav-link ${adminMenu === 9 ? "active" : "link-dark"}`} onClick={(e) => { e.preventDefault(); setAdminMenu(9) }}>
                             <i className="fa-solid fa-circle-exclamation" style={{ fontSize: "1.4rem", paddingRight: "30px" }}></i>
                             Post vi phạm
                         </a>
-                    </li>
+                    </li> */}
                 </ul>
                 <hr />
                 <div className="dropdown">
                     <a href="#" className="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src={auth.user.avatar} alt="" width="40" height="40" className="rounded me-2 object-fit-cover" />
+                        <img src={`${imageApiUrl}/${auth.user.avatar}`} alt="" width="40" height="40" className="rounded me-2 object-fit-cover" />
                         <strong>{auth.user.fullName}</strong>
                     </a>
                     <ul className="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
@@ -174,7 +175,7 @@ const LeftSideBar = () => {
             {adminMenu === 6 && <Search />}
             {adminMenu === 7 && <Main />}
             {adminMenu === 8 && <UserManagement />}
-            {adminMenu === 9 && <SpamManagement />}
+            {/* {adminMenu === 9 && <SpamManagement />} */}
             {adminMenu === 10 && <AdminProfile />}
         </>
     )

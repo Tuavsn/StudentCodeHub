@@ -11,6 +11,7 @@ const CardHeader = ({ post }) => {
     const { auth, socket } = useSelector((state) => state)
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const imageApiUrl = process.env.REACT_APP_IMAGE_URL
     const [isHover, setIsHover] = useState(null)
     moment.locale('vi')
 
@@ -34,7 +35,7 @@ const CardHeader = ({ post }) => {
         <div className="d-flex align-items-center justify-content-between">
             <div className="d-flex align-items-stretch gap-4">
                 <div>
-                    <img src={post.user.avatar} style={{width: "4rem", height: "4rem", borderRadius: "20%", objectFit: "cover"}} />
+                    <img src={`${imageApiUrl}/${post.user.avatar}`} style={{width: "4rem", height: "4rem", borderRadius: "20%", objectFit: "cover"}} />
                 </div>
                 <div className="overflow-hidden">
                     <h3 style={{color: "#2F55A6", margin: "0", cursor: "pointer"}} onClick={() => navigate(`/post/${post.id}`)}>{post.header}</h3>

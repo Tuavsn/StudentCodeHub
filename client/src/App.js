@@ -47,11 +47,11 @@ function App() {
                 <Route exact path='/' Component={userType === "ADMIN" ?
                   auth.token ? AdminHome : Login
                   : auth.token ? UserHome : Login} />
-                <Route exact path='/regist' Component={Regist} />
-                <Route exact path='/user/:id' Component={UserProfileDetail} />
-                <Route exact path='/post/:id' Component={PostDetail}/>
-                {(userType === "ADMIN" || userType === "USER") && (
+                {(userType === "ADMIN" || userType === "USER") && auth.user.status === 0 && (
                   <>
+                    <Route exact path='/regist' Component={Regist} />
+                    <Route exact path='/user/:id' Component={UserProfileDetail} />
+                    <Route exact path='/post/:id' Component={PostDetail}/>
                     <Route exact path="/:page" Component={<PrivateRouter />} />
                     <Route exact path="/:page/:id" Component={() => <PrivateRouter path="/:page/:id" />} />
                     <Route exact path="/:page/:id/:action" Component={() => <PrivateRouter path="/:page/:id/:action" />} />

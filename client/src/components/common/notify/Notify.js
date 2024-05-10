@@ -9,6 +9,7 @@ const Notify = () => {
     const {auth, notify} = useSelector((state) => state)
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const imageApiUrl = process.env.REACT_APP_IMAGE_URL
     moment.locale('vi')
 
     const handleDeleteNotify = (notify) => {
@@ -39,7 +40,7 @@ const Notify = () => {
                                 <div className={`notification-list ${item.status == 0 ? 'notification-list--unread' : ''}`} key={index} style={{cursor: "pointer", position: "relative"}}>
                                     <div className="notification-list_content" onClick={() => handleIsReadNotify(item)}>
                                         <div className="notification-list_img">
-                                            <img src={item.source.avatar} alt="user" style={{objectFit: "cover"}}/>
+                                            <img src={`${imageApiUrl}/${item.source.avatar}`} alt="user" style={{objectFit: "cover"}}/>
                                         </div>
                                         <div className="notification-list_detail">
                                             <p>Từ: <b>{item.source.fullName}</b></p>
@@ -57,9 +58,9 @@ const Notify = () => {
                                     </div>
                                 </div>
                             ))}
-                            <div className="text-center">
+                            {/* <div className="text-center">
                                 <a href="#!" className="dark-link">Xem thêm</a>
-                            </div>
+                            </div> */}
                         </>
                     ) : (<div className="text-center">Chưa có thông báo nào</div>)}
                     

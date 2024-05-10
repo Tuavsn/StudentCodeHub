@@ -3,7 +3,8 @@ import { GLOBALTYPES } from "../action/globalTypes";
 const initialState = {
     loading: false,
     error: null,
-    success: null
+    success: null,
+    notify: null
 }
 
 const alertReducer = (state = initialState, action) => {
@@ -12,14 +13,16 @@ const alertReducer = (state = initialState, action) => {
             return {
                 ...state,
                 success: null,
-                error: action.payload
+                error: action.payload,
+                notify: null
             }
         
         case GLOBALTYPES.SUCCESS_ALERT:
             return {
                 ...state,
                 error: null,
-                success: action.payload
+                success: action.payload,
+                notify: null
             }
         
         case GLOBALTYPES.LOADING:
@@ -32,7 +35,16 @@ const alertReducer = (state = initialState, action) => {
             return {
                 ...state,
                 error: null,
-                success: null
+                success: null,
+                notify: null
+            }
+        
+        case GLOBALTYPES.NOTIFY_ALERT:
+            return {
+                ...state,
+                error: null,
+                success: null,
+                notify: action.payload
             }
         
         default:
