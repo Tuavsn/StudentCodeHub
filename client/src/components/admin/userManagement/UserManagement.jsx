@@ -1,26 +1,41 @@
 import { useDispatch, useSelector } from "react-redux"
 import {
-    getTotalPosts,
-    getTotalUsers
+    getAllUsers,
+    blockUser,
+    unblockUser
 } from "../../../redux/action/adminAction"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import userlogo from "../../../images/user.png"
+import UpdateInfo from "../../common/updateInfo/UpdateInfo"
 
 const UserManagement = () => {
     const { auth, admin, socket } = useSelector((state) => state)
     const dispatch = useDispatch()
+    const imageApiUrl = process.env.REACT_APP_IMAGE_URL
+    const [user, setUser] = useState(auth.user)
 
     const isActiveUser = (userId) => {
         return admin.total_active_users.find(user => user.id === userId);
     }
 
+    const handleBlockUser = (user) => {
+        dispatch(blockUser(user, auth.token))
+    }
+
+    const handleUnblockUser = (user) => {
+        dispatch(unblockUser(user, auth.token))
+    }
+
+    // useEffect(() => {
+
+    // }, [user])
+
     useEffect(() => {
-        dispatch(getTotalUsers(auth.token));
-        dispatch(getTotalPosts(auth.token));
-        // console.log(admin.total_active_users)
-        // dispatch(getTotalComments(auth.token));
-        // dispatch(getTotalLikes(auth.token));
-        // dispatch(getTotalSpamPosts(auth.token))
+        
+    }, [admin.all_users])
+
+    useEffect(() => {
+        dispatch(getAllUsers(auth.token));
     }, [dispatch, auth.token, socket, auth])
     return (
         <div className="p-4 d-flex flex-column gap-5" style={{width: "100%", overflowY: "scroll", scrollbarWidth: 'thin', msOverflowStyle: 'thin'}}>
@@ -34,14 +49,16 @@ const UserManagement = () => {
                         <th scope="col">Tên người dùng</th>
                         <th scope="col">Email</th>
                         <th scope="col">Role</th>
-                        <th scope="col">Trạng thái</th>
+                        <th scope="col">Online</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Chỉnh sửa</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {admin.total_users ? admin.total_users.map((user, index) => (
+                        {admin.all_users ? admin.all_users.map((user, index) => (
                             <tr key={index}>
                                 <th scope="row">{index+1}</th>
-                                <td><img src={user.avatar} style={{width: "3rem", height: "3rem", borderRadius: "10%", objectFit: "cover"}} /></td>
+                                <td><img src={`${imageApiUrl}/${user.avatar}`} style={{width: "3rem", height: "3rem", borderRadius: "10%", objectFit: "cover"}} /></td>
                                 <td>{user.fullName}</td>
                                 <td>{user.email}</td>
                                 <td>{user.role.toLowerCase()}</td>
@@ -49,10 +66,25 @@ const UserManagement = () => {
                                     <i className="fa-solid fa-signal" style={{fontSize: "1.2rem", color: "green"}} />
                                     : <i className="fa-solid fa-signal" style={{fontSize: "1.2rem", color: "red"}} />}
                                 </td>
+                                <td>{user.status == 0 ?
+                                    <i className="fa-solid fa-user-check" style={{fontSize: "1.2rem", color: "green"}} />
+                                    : <i className="fa-solid fa-user-lock" style={{fontSize: "1.2rem", color: "red"}} />}
+                                </td>
+                                <td>
+                                    <i id={`editUserInfo${user.id}`} className="fa-solid fa-pen-to-square" style={{fontSize: "1.2rem", color: "green", marginRight: "1rem", cursor: "pointer"}} 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#updateInfoModal"
+                                    onClick={() => setUser(user)}/>
+                                    {user.status == 0 ?
+                                    <i className="fa-solid fa-ban" style={{fontSize: "1.2rem", color: "red", cursor: "pointer"}} onClick={() => handleBlockUser(user)}/>
+                                    : <i className="fa-solid fa-lock-open" style={{fontSize: "1.2rem", color: "red", cursor: "pointer"}} onClick={() => handleUnblockUser(user)}/>
+                                    }
+                                </td>
                             </tr>
                         )) : <></>}
                     </tbody>
                 </table>
+                <UpdateInfo user={user} />
             </div>
         </div>
     )

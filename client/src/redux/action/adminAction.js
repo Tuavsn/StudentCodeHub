@@ -1,23 +1,32 @@
 import { GLOBALTYPES } from './globalTypes'
-import { getDataAPI, deleteDataAPI } from '../../utils/fetchData'
+import { getDataAPI, deleteDataAPI, patchDataAPI } from '../../utils/fetchData'
 import { createNotify } from './notifyAction'
 
 export const ADMIN_TYPES = {
-    GET_TOTAL_USERS: "GET_TOTAL_USERS",
-    GET_TOTAL_POSTS: "GET_TOTAL_POSTS",
-    GET_TOTAL_COMMENTS: "GET_TOTAL_COMMENTS",
-    GET_TOTAL_LIKES: "GET_TOTAL_LIKES",
-    GET_TOTAL_SPAM_POSTS: "GET_TOTAL_SPAM_POSTS",
-    GET_TOTAL_ACTIVE_USERS: "GET_TOTAL_ACTIVE_USERS",
-    GET_SPAM_POSTS: "GET_SPAM_POSTS",
-    DELETE_POST: "DELETE_POST"
+    GET_ALL_USERS: "GET_ALL_USERS",
+    GET_MONTHLY_DATA: "GET_MONTHLY_DATA",
+    DELETE_POST: "DELETE_POST",
+    BLOCK_USER: "BLOCK_USER",
+    UNBLOCK_USER: "UNBLOCK_USER"
 }
 
-export const getTotalUsers = (token) => async(dispatch) => {
+export const getMonthlyData = (token) => async(dispatch) => {
+    try {
+        dispatch({ type: GLOBALTYPES.LOADING, payload: true })
+        const res = await getDataAPI("admin/dashboard", token)
+        dispatch({ type: ADMIN_TYPES.GET_MONTHLY_DATA, payload: res.data })
+        dispatch({ type: GLOBALTYPES.LOADING, payload: false })
+    } catch (err) {
+        dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: err.response.data.message })
+        dispatch({ type: GLOBALTYPES.LOADING, payload: false })
+    }
+}
+
+export const getAllUsers = (token) => async(dispatch) => {
     try {
         dispatch({ type: GLOBALTYPES.LOADING, payload: true })
         const res = await getDataAPI("admin/get_total_users", token)
-        dispatch({ type: ADMIN_TYPES.GET_TOTAL_USERS, payload: res.data })
+        dispatch({ type: ADMIN_TYPES.GET_ALL_USERS, payload: res.data })
         dispatch({ type: GLOBALTYPES.LOADING, payload: false })
     } catch (err) {
         dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: err.response.data.message })
@@ -25,11 +34,12 @@ export const getTotalUsers = (token) => async(dispatch) => {
     }
 }
 
-export const getTotalPosts = (token) => async(dispatch) => {
+export const blockUser = (user, token) => async(dispatch) => {
     try {
         dispatch({ type: GLOBALTYPES.LOADING, payload: true})
-        const res = await getDataAPI("admin/get_total_posts", token)
-        dispatch({ type: ADMIN_TYPES.GET_TOTAL_POSTS, payload: res.data })
+        await patchDataAPI(`admin/user/${user.id}/block`, {}, token)
+        user.status = 1
+        dispatch({ type: ADMIN_TYPES.BLOCK_USER, payload: user })
         dispatch({ type: GLOBALTYPES.LOADING, payload: false})
     } catch (err) {
         dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: err.response.data.message })
@@ -37,70 +47,13 @@ export const getTotalPosts = (token) => async(dispatch) => {
     }
 }
 
-export const getTotalComments = (token) => async(dispatch) => {
+export const unblockUser = (user, token) => async(dispatch) => {
     try {
         dispatch({ type: GLOBALTYPES.LOADING, payload: true})
-        const res = await getDataAPI("admin/get_total_comments", token)
-        dispatch({ type: ADMIN_TYPES.GET_TOTAL_COMMENTS, payload: res.data })
+        await patchDataAPI(`admin/user/${user.id}/unBlock`, {}, token)
+        user.status = 0
+        dispatch({ type: ADMIN_TYPES.UNBLOCK_USER, payload: user })
         dispatch({ type: GLOBALTYPES.LOADING, payload: false})
-    } catch (err) {
-        dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: err.response.data.message })
-        dispatch({ type: GLOBALTYPES.LOADING, payload: false })
-    }
-}
-
-export const getTotalLikes = (token) => async(dispatch) => {
-    try {
-        dispatch({ type: GLOBALTYPES.LOADING, payload: true})
-        const res = await getDataAPI("admin/get_total_likes", token)
-        dispatch({ type: ADMIN_TYPES.GET_TOTAL_LIKES, payload: res.data })
-        dispatch({ type: GLOBALTYPES.LOADING, payload: false})
-    } catch (err) {
-        dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: err.response.data.message })
-        dispatch({ type: GLOBALTYPES.LOADING, payload: false })
-    }
-}
-
-export const getTotalSpamPosts = (token) => async(dispatch) => {
-    try {
-        dispatch({ type: GLOBALTYPES.LOADING, payload: true})
-        const res = await getDataAPI("admin/get_total_spam_posts", token)
-        dispatch({ type: ADMIN_TYPES.GET_TOTAL_SPAM_POSTS, payload: res.data })
-        dispatch({ type: GLOBALTYPES.LOADING, payload: false})
-    } catch (err) {
-        dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: err.response.data.message })
-        dispatch({ type: GLOBALTYPES.LOADING, payload: false })
-    }
-}
-
-export const getSpamPosts = (token) => async(dispatch) => {
-    try {
-        dispatch({ type: GLOBALTYPES.LOADING, payload: true})
-        const res = await getDataAPI("admin/get_spam_posts", token)
-        dispatch({ type: ADMIN_TYPES.GET_SPAM_POSTS, payload: res.data.spamPosts })
-        dispatch({ type: GLOBALTYPES.LOADING, payload: false})
-    } catch (err) {
-        dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: err.response.data.message })
-        dispatch({ type: GLOBALTYPES.LOADING, payload: false })
-    }
-}
-
-export const deleteSpamPost = ({ post, auth, socket }) => async(dispatch) => {
-    dispatch({ type: ADMIN_TYPES.DELETE_POST, payload: post })
-    try {
-        dispatch({ type: GLOBALTYPES.LOADING, payload: true})
-        const res = await deleteDataAPI(`admin/delete_spam_posts/${post._id}`, auth.token)
-        dispatch({ type: GLOBALTYPES.LOADING, payload: false})
-        dispatch({ type: GLOBALTYPES.SUCCESS_ALERT, payload: res.data.message })
-
-        const msg = {
-            id: auth.user._id,
-            text: "Your Post is deleted due to too many reports!",
-            recipients: [post.user._id],
-            url: `/profile/${post.user._id}`
-        }
-
-        dispatch(createNotify({ msg, auth, socket }))
     } catch (err) {
         dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: err.response.data.message })
         dispatch({ type: GLOBALTYPES.LOADING, payload: false })

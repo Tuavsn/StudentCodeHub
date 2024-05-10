@@ -2,6 +2,7 @@ package com.group7.studentcodehub.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.group7.studentcodehub.entities.user_follow;
@@ -21,6 +22,8 @@ public class UserProfileDto {
 	private String fullName;
 	@JsonProperty("email")
 	private String email;
+	@JsonIgnore
+	private String password;
 	@JsonProperty("avatar")
 	private String avatar;
 	@JsonProperty("gender")

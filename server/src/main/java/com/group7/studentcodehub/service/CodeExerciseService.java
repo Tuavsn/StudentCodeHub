@@ -1,5 +1,7 @@
 package com.group7.studentcodehub.service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +38,8 @@ public class CodeExerciseService {
 
 	@Autowired
 	private CodeSubmissionRepository codeSubmissionRepository;
+	
+	ZoneId vietnamZone = ZoneId.of("Asia/Ho_Chi_Minh");
 
 	public List<code_exercise> getApprovedCodeExercise() {
 		List<code_exercise> lists = codeExerciseRepository.findByStatus("APPROVED");
@@ -104,8 +108,13 @@ public class CodeExerciseService {
 				}
 			}
 
-			code_submission codeSubmission = code_submission.builder().code(code).codeExercise(codeExercise).user(User)
-					.language_id(language_id).score(totalScore * (1.0 * accepted / testCasesCount))
+			code_submission codeSubmission = code_submission.builder()
+					.code(code)
+					.createAt(LocalDateTime.now(vietnamZone))
+					.codeExercise(codeExercise)
+					.user(User)
+					.language_id(language_id)
+					.score(totalScore * (1.0 * accepted / testCasesCount))
 					.result(results.toString()).build();
 			codeSubmissionRepository.save(codeSubmission);
 			return codeSubmission;

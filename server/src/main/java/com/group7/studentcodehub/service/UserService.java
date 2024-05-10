@@ -7,8 +7,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.group7.studentcodehub.dto.UpdateInfoDto;
 import com.group7.studentcodehub.dto.UserProfileDto;
 import com.group7.studentcodehub.entities.user;
 import com.group7.studentcodehub.entities.user_follow;
@@ -24,6 +26,34 @@ public class UserService {
 	UserFollowRepository userFollowRepository;
 	@Autowired
 	JwtService jwtService;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+	public void updateInfo(
+			UpdateInfoDto userInfo, 
+			HttpServletRequest request
+	) throws IOException, Exception {
+		final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+		final String refreshToken;
+		final String userName;
+		if (authHeader == null || !authHeader.startsWith("Bearer"))	return ;
+		refreshToken = authHeader.substring(7);
+		userName = jwtService.extractUsername(refreshToken);
+		if (userName != null) {
+			var User = userRepository.findByUserName(userName).orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng"));
+			if (jwtService.isTokenValid(refreshToken, User)) {
+				if(userInfo.getPassword() != null) {
+					User.setPassword(passwordEncoder.encode(userInfo.getPassword()));					
+				}
+				User.setFullName(userInfo.getFullName());
+				User.setAvatar(userInfo.getAvatar());
+				User.setEmail(userInfo.getEmail());
+				User.setGender(userInfo.getGender());
+				User.setMobile(userInfo.getMobile());
+				userRepository.save(User);
+			}
+		}
+	}
 	
 	public void followUser(int userId, 
 			HttpServletRequest request

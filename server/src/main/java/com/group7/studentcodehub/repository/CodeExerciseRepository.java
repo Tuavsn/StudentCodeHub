@@ -12,4 +12,6 @@ public interface CodeExerciseRepository extends JpaRepository<code_exercise, Int
 
 	@Query("SELECT c FROM code_exercise c WHERE c.status = :status")
 	List<code_exercise> findByStatus(@Param(value = "status") String status);
+	@Query("SELECT MONTH(c.createAt), COUNT(c.id) FROM code_exercise c GROUP BY MONTH(c.createAt)")
+	List<Object[]> getTotalCodeExercisePerMonth();
 }

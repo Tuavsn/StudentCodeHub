@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.group7.studentcodehub.dto.UpdateInfoDto;
 import com.group7.studentcodehub.dto.UserProfileDto;
 import com.group7.studentcodehub.entities.user;
 import com.group7.studentcodehub.entities.user_follow;
@@ -35,6 +36,18 @@ public class UserController {
 	UserService userService;
 	@Autowired
 	UserFollowRepository userFollowRepository;
+	
+	@PostMapping("/user/updateInfo")
+	public ResponseEntity<java.util.Map<String, Object>> updateUserInfo(
+			@RequestBody UpdateInfoDto userInfo,
+			HttpServletRequest request
+	) throws IOException, Exception {
+		System.out.println(userInfo.getAvatar());
+		userService.updateInfo(userInfo, request);
+		java.util.Map<String, Object> response = new java.util.HashMap<>();
+		response.put("msg", "Cập nhật thông tin thành công !!!");
+		return ResponseEntity.ok(response);
+	}
 	
 	@GetMapping("/user/{userId}")
 	public ResponseEntity<UserProfileDto> getUserDetail(@PathVariable("userId") int userId) {
