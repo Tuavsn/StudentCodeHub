@@ -11,7 +11,7 @@ const RightSideBar = () => {
 
     return (
         <div className="d-flex flex-column justify-content-between vh-100">
-            <div className="flex-grow-1 d-flex flex-column py-3 h-50 overflow-y-scroll">
+            <div className="flex-grow-1 d-flex flex-column py-3 h-50 overflow-y-scroll" style={{scrollbarWidth: 'thin', msOverflowStyle: 'thin'}}>
                 <h5 style={{textAlign: "center"}}>
                     <i className="fa-solid fa-user" style={{fontSize: "1.2rem", color: "#2F55A6"}} /> Following
                 </h5>
@@ -30,7 +30,7 @@ const RightSideBar = () => {
                 </div>
             </div>
             <hr />
-            <div className="flex-grow-1 d-flex flex-column h-50 overflow-y-scroll">
+            <div className="flex-grow-1 d-flex flex-column h-50 overflow-y-scroll" style={{scrollbarWidth: 'thin', msOverflowStyle: 'thin'}}>
                 <h5 style={{textAlign: "center"}}>
                     <i className="fa-solid fa-user" style={{fontSize: "1.2rem", color: "green"}} /> Follwers
                 </h5>

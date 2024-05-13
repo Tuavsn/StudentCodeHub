@@ -8,8 +8,6 @@ import Logo from "../../images/icon.png"
 import Posts from "../common/post/Posts"
 import UserProfile from "./userProfile/UserProfile"
 import RightSideBar from "../common/rightSideBar/RightSideBar"
-import InputPost from "../common/post/InputPost"
-import UpdatePost from "../common/post/UpdatePost"
 import Chat from "../common/chat/Chat"
 import Search from "../common/search/Search"
 import Notify from "../common/notify/Notify"
@@ -120,7 +118,7 @@ const LeftSideBar = () => {
                         <strong>{auth.user.fullName}</strong>
                     </a>
                     <ul className="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-                        <li><a className="dropdown-item" href="#">Cài đặt</a></li>
+                        {/* <li><a className="dropdown-item" href="#">Cài đặt</a></li> */}
                         <li><a className="dropdown-item" href="#" onClick={(e) => { e.preventDefault(); setUserMenu(6) }}>Thông tin</a></li>
                         <li><hr className="dropdown-divider" /></li>
                         <li><p className="dropdown-item" style={{ marginBottom: 0, cursor: "pointer" }} onClick={() => dispatch(logout())}>Đăng xuất</p></li>
@@ -130,8 +128,6 @@ const LeftSideBar = () => {
             {userMenu === 0 && <Search />}
             {userMenu === 1 && (
                 <>
-                    <InputPost />
-                    <UpdatePost />
                     <Posts />
                     <div className="col-md-2">
                         <RightSideBar />
@@ -140,8 +136,6 @@ const LeftSideBar = () => {
             )}
             {userMenu === 2 && (
                 <>
-                    <InputPost />
-                    <UpdatePost />
                     <Posts />
                     <div className="col-md-2">
                         <RightSideBar />

@@ -8,16 +8,19 @@ const Chat = () => {
 
     const { auth, userMessage } = useSelector((state) => state)
     const [search, setSearch] = useState('')
-    const [searchUser, setSearchUser] = useState()
     const [currentRecipient, setCurrentRecipient] = useState(null)
     const [isHover, setIsHover] = useState(null)
     const imageApiUrl = process.env.REACT_APP_IMAGE_URL
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
+    const handleSearchChange = (e) => {
+        const value = e.target.value
+        setSearch(value)
+    }
+
     const handleAddUserMessage = (recipient) => {
         setSearch('')
-        setSearchUser([])
         userMessage.messages.filter((message) => 
             message.source.id === recipient.id && message.target.id === auth.user.id && message.status === 0
         ).map((item) => item.status = 1)
@@ -33,11 +36,11 @@ const Chat = () => {
         <main className="content flex-grow-1 h-100" style={{overflow: "hidden"}}>
             <div className="w-100 row g-0 h-100">
                 {/* Recipient List */}
-                <div className="col-12 col-lg-5 col-xl-3 border-right h-100" style={{overflowY: "scroll"}}>
+                <div className="col-12 col-lg-5 col-xl-3 border-right h-100" style={{overflowY: "scroll", scrollbarWidth: 'thin', msOverflowStyle: 'thin'}}>
 
                     <div className="px-1 d-none d-md-block">
                         <div className="d-flex align-items-stretch my-2">
-                            <input type="text" className="form-control" placeholder="Tìm kiếm..." />
+                            <input type="text" className="form-control" placeholder="Tìm kiếm..." onChange={(e) => handleSearchChange(e)}/>
                             <button 
                             className="d-flex align-items-center"
                             style={{border: "none", borderRadius: "10%", backgroundColor: "#0D6EFD", margin: "0 .2rem", color: "#fff"}} data-bs-toggle="modal" data-bs-target="#newMsgModal">
@@ -48,7 +51,7 @@ const Chat = () => {
                     </div>
 
                     {
-                        userMessage.recipients.map((recipient, index) => (
+                        userMessage.recipients.filter((item) => item.fullName.toLowerCase().includes(search.toLocaleLowerCase())).map((recipient, index) => (
                             <div key={index} onClick={() => handleAddUserMessage(recipient)}>
                                 <div style={{cursor: "pointer"}} className="list-group-item list-group-item-action border-0 py-2">
                                     {
@@ -116,11 +119,12 @@ const Chat = () => {
                     )}
                 </div>
 
-                <div className="modal fade" id="newMsgModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div className="modal fade" id="newMsgModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
                     <div className="modal-dialog modal-dialog-centered" role="document">
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title flex-grow-1 text-center" id="exampleModalLongTitle">Tạo mesage mới</h5>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div className="modal-body" style={{overflowY: "scroll"}}>
                                 <h5>Followers</h5>

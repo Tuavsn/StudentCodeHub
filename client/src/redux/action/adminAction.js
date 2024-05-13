@@ -3,9 +3,9 @@ import { getDataAPI, deleteDataAPI, patchDataAPI } from '../../utils/fetchData'
 import { createNotify } from './notifyAction'
 
 export const ADMIN_TYPES = {
+    GET_TOTAL_ACTIVE_USERS: "GET_TOTAL_ACTIVE_USERS",
     GET_ALL_USERS: "GET_ALL_USERS",
     GET_MONTHLY_DATA: "GET_MONTHLY_DATA",
-    DELETE_POST: "DELETE_POST",
     BLOCK_USER: "BLOCK_USER",
     UNBLOCK_USER: "UNBLOCK_USER"
 }

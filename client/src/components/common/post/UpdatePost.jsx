@@ -10,6 +10,7 @@ const UpdatePost = () => {
     const editorRef = useRef(null);
     const [headerInput, setHeaderInput] = useState('');
     const [editorData, setEditorData] = useState('');
+    const [errors, setErrors] = useState({});
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
     const [oldImagePreviews, setOldImagePreviews] = useState([])
@@ -47,8 +48,9 @@ const UpdatePost = () => {
 
     const handleHeaderInputChange = (e) => {
         e.preventDefault();
-        const data = e.target.value
-        setHeaderInput(data)
+        const { name, value } = e.target
+        setHeaderInput(value)
+        setErrors({...errors, [name]: ""})
     }
 
     const handleEditorChange = (e, editor) => {
@@ -58,18 +60,41 @@ const UpdatePost = () => {
 
     const handleButtonClick = (e) => {
         e.preventDefault()
-        dispatch(updatePost({post: homePosts.currentPost, header: headerInput , postImages: selectedFiles, content: editorData, isNewImage: isNewImage, auth: auth}))
-        setSelectedFiles([]);
-        setImagePreviews([]);
-        const fileInput = document.getElementById('fileUpdateInput');
-        const header = document.getElementById('updateHeaderInput');
-        const editor = editorRef.current.editor;
-        if(fileInput) fileInput.value = '';
-        editor.setData('')
-        header.value = '';
-        setEditorData('')
-        setHeaderInput('')
-        setIsNewImage(false)
+
+        let errors  = {}
+
+        // Validate header input
+        const headerRegex = /^[a-zA-Z0-9\sàáạãảăắằẵặâấầẩẫậèéẹẻẽêềếểễệđìíịỉĩòóọỏõôốồổỗộơớờởỡợùúụủũưứừửữựỳỹỷỵ]*$/;
+
+        if(!headerInput) {
+            errors.headerInput = "Vui lòng nhập tiêu đề cho bài post"
+        } else if (!headerRegex.test(headerInput)) {
+            errors.headerInput = "Tiêu đề bài post không được chứa ký tự đặc biệt"
+        } else if (headerInput.length > 90) {
+            errors.headerInput = "Tiêu đề quá dài, vui lòng nhập ít hơn 90 ký tự"
+        }
+        if (Object.keys(errors).length === 0) {
+            dispatch(updatePost({post: homePosts.currentPost, header: headerInput , postImages: selectedFiles, content: editorData, isNewImage: isNewImage, auth: auth}))
+        
+            setSelectedFiles([]);
+            
+            setImagePreviews([]);
+            
+            // Reset input
+            const fileInput = document.getElementById('fileUpdateInput');
+            const header = document.getElementById('updateHeaderInput');
+            const close = document.getElementById('closeUpdatePost')
+            const editor = editorRef.current.editor;
+            if(fileInput) fileInput.value = '';
+            editor.setData('')
+            header.value = '';
+            setEditorData('')
+            setHeaderInput('')
+            setIsNewImage(false)
+            close.click()
+        } else {
+            setErrors(errors)
+        }
     }
 
     const handleCancelPost = (e) => {
@@ -89,11 +114,12 @@ const UpdatePost = () => {
 
     return (
         <>
-            <div className="modal fade" id={`updatePostModal`} tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div className="modal fade" id={`updatePostModal`} tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
                 <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title flex-grow-1 text-center" id="exampleModalLongTitle">Bài Post mới</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeUpdatePost" onClick={handleCancelPost}></button>
                         </div>
                         <div className="modal-body">
                             <div>
@@ -137,17 +163,18 @@ const UpdatePost = () => {
                                 </>
                             )}
                             <h4>Tiêu đề</h4>
-                            <input id="updateHeaderInput" className="mb-2 mb-3 p-2 w-100" type="text" onChange={(e) => handleHeaderInputChange(e)} value={headerInput}></input>
+                                <input id="updateHeaderInput" className="mb-2 mb-3 p-2 w-100" type="text" onChange={(e) => handleHeaderInputChange(e)} value={headerInput}></input>
+                                {errors.headerInput && <small style={{fontWeight: "bold"}} className="text-danger">{errors.headerInput}</small>}
                             <h4>Nội dung</h4>
-                            <CKEditor
-                                editor={ClassicEditor}
-                                onChange={handleEditorChange}
-                                ref={editorRef}
-                            />
+                                <CKEditor
+                                    editor={ClassicEditor}
+                                    onChange={handleEditorChange}
+                                    ref={editorRef}
+                                />
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" onClick={handleCancelPost} data-bs-dismiss="modal">Huỷ</button>
-                            <button type="button" className="btn btn-primary" onClick={handleButtonClick} data-bs-dismiss="modal">Lưu Post</button>
+                            <button type="button" className="btn btn-primary" onClick={handleButtonClick}>Lưu Post</button>
                         </div>
                     </div>
                 </div>

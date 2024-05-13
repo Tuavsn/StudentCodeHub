@@ -19,7 +19,7 @@ export const POST_TYPES = {
     GET_DETAIL_POST: "GET_POST"
 }
 
-export const createPost = ({ postImages, content, auth }) => async dispatch => {
+export const createPost = ({ postImages, header, content, auth }) => async dispatch => {
     try {
     dispatch({ type: GLOBALTYPES.LOADING, payload: true })
 
@@ -36,7 +36,7 @@ export const createPost = ({ postImages, content, auth }) => async dispatch => {
 
     }
 
-    const res = await postDataAPI('posts', {imageList, content} , auth.token)
+    const res = await postDataAPI('posts', {imageList, header, content} , auth.token)
 
     auth.followers.forEach((item) => {
         var msg = {
@@ -104,7 +104,7 @@ export const getExplorePosts = (token) => async dispatch => {
     }
 }
 
-export const updatePost = ({ post, content, postImages, isNewImage, auth, type }) => async dispatch => {
+export const updatePost = ({ post, header, content, postImages, isNewImage, auth, type }) => async dispatch => {
     try {
         dispatch({ type: GLOBALTYPES.LOADING, payload: true })
     
@@ -112,7 +112,7 @@ export const updatePost = ({ post, content, postImages, isNewImage, auth, type }
 
         var res
 
-        if(postImages.length > 0) {
+        if(postImages.length > 0 && isNewImage) {
             // add new image
             const formData = new FormData()
     
@@ -123,11 +123,11 @@ export const updatePost = ({ post, content, postImages, isNewImage, auth, type }
             imageList = await (await postDataAPI('images/save', formData, auth.token)).data.images
         }
         
-        res = await patchDataAPI(`post/${post.id}`, {imageList, content, isNewImage}, auth.token)
+        res = await patchDataAPI(`post/${post.id}`, {imageList, header, content, isNewImage}, auth.token)
 
         imageList = []
 
-        if(post.postImage.length > 0) {
+        if(post.postImage.length > 0 && isNewImage) {
             //delete previous image 
             await post.postImage.forEach(image => {
                 imageList.push(image.imageUrl)

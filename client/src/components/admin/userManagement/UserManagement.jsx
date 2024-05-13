@@ -6,13 +6,15 @@ import {
 } from "../../../redux/action/adminAction"
 import { useEffect, useState } from "react"
 import userlogo from "../../../images/user.png"
-import UpdateInfo from "../../common/updateInfo/UpdateInfo"
+import { useNavigate } from "react-router-dom"
 
 const UserManagement = () => {
     const { auth, admin, socket } = useSelector((state) => state)
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const imageApiUrl = process.env.REACT_APP_IMAGE_URL
-    const [user, setUser] = useState(auth.user)
+    const [isHover, setIsHover] = useState(null)
+    // const [user, setUser] = useState(auth.user)
 
     const isActiveUser = (userId) => {
         return admin.total_active_users.find(user => user.id === userId);
@@ -25,10 +27,6 @@ const UserManagement = () => {
     const handleUnblockUser = (user) => {
         dispatch(unblockUser(user, auth.token))
     }
-
-    // useEffect(() => {
-
-    // }, [user])
 
     useEffect(() => {
         
@@ -47,11 +45,13 @@ const UserManagement = () => {
                         <th scope="col">#</th>
                         <th scope="col">Avatar</th>
                         <th scope="col">Tên người dùng</th>
+                        <th scope="col">Giới tính</th>
                         <th scope="col">Email</th>
+                        <th scope="col">Số điện thoại</th>
                         <th scope="col">Role</th>
                         <th scope="col">Online</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Chỉnh sửa</th>
+                        <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -59,8 +59,15 @@ const UserManagement = () => {
                             <tr key={index}>
                                 <th scope="row">{index+1}</th>
                                 <td><img src={`${imageApiUrl}/${user.avatar}`} style={{width: "3rem", height: "3rem", borderRadius: "10%", objectFit: "cover"}} /></td>
-                                <td>{user.fullName}</td>
+                                <td 
+                                style={{cursor: "pointer"}}
+                                className={`${isHover === user.id ? 'text-primary': ''}`}
+                                onMouseEnter={() => setIsHover(user.id)} 
+                                onMouseLeave={() => setIsHover(null)}
+                                onClick={() => navigate(`/user/${user.id}`)}><p>{user.fullName}</p></td>
+                                {user.gender ? <td>{user.gender}</td> : <td className="text-danger">Chưa cập nhật</td>}
                                 <td>{user.email}</td>
+                                {user.mobile ? <td>{user.mobile}</td> : <td className="text-danger">Chưa cập nhật</td>}
                                 <td>{user.role.toLowerCase()}</td>
                                 <td>{admin.total_active_users && isActiveUser(user.id) ? 
                                     <i className="fa-solid fa-signal" style={{fontSize: "1.2rem", color: "green"}} />
@@ -71,10 +78,6 @@ const UserManagement = () => {
                                     : <i className="fa-solid fa-user-lock" style={{fontSize: "1.2rem", color: "red"}} />}
                                 </td>
                                 <td>
-                                    <i id={`editUserInfo${user.id}`} className="fa-solid fa-pen-to-square" style={{fontSize: "1.2rem", color: "green", marginRight: "1rem", cursor: "pointer"}} 
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#updateInfoModal"
-                                    onClick={() => setUser(user)}/>
                                     {user.status == 0 ?
                                     <i className="fa-solid fa-ban" style={{fontSize: "1.2rem", color: "red", cursor: "pointer"}} onClick={() => handleBlockUser(user)}/>
                                     : <i className="fa-solid fa-lock-open" style={{fontSize: "1.2rem", color: "red", cursor: "pointer"}} onClick={() => handleUnblockUser(user)}/>
@@ -84,7 +87,6 @@ const UserManagement = () => {
                         )) : <></>}
                     </tbody>
                 </table>
-                <UpdateInfo user={user} />
             </div>
         </div>
     )

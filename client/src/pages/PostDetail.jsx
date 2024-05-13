@@ -4,6 +4,8 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { getDetailPosts } from "../redux/action/postAction";
 import PostCard from "../components/common/post/PostCard";
+import InputPost from "../components/common/post/InputPost";
+import UpdatePost from "../components/common/post/UpdatePost";
 
 const PostDetail = () => {
     const { homePosts, auth } = useSelector((state) => state)
@@ -16,12 +18,16 @@ const PostDetail = () => {
     }, [dispatch])
 
     return (
-        <div style={{maxWidth: "1000px", margin: "auto"}}>
-            <i className="fa-solid fa-arrow-left" style={{fontSize: "2rem", color: "black", position: "fixed", top: 15, left: 15, cursor: "pointer"}} onClick={() => navigate('/')}></i>
-            {homePosts.detailPost && (
-                <PostCard post={homePosts.detailPost} type="detailPost" />
-            )}
-        </div>
+        <>
+            <div style={{maxWidth: "1000px", margin: "auto"}}>
+                <i className="fa-solid fa-arrow-left" style={{fontSize: "2rem", color: "black", position: "fixed", top: 15, left: 15, cursor: "pointer"}} onClick={() => navigate('/')}></i>
+                {homePosts.detailPost && (
+                    <PostCard post={homePosts.detailPost} type="detailPost" />
+                )}
+            </div>
+            <InputPost />
+            <UpdatePost />
+        </>
     )
 }
 

@@ -7,12 +7,9 @@ import { getHomePosts, getExplorePosts } from "../../../redux/action/postAction"
 import Logo from "../../../images/icon.png"
 import Main from "../main/Main"
 import UserManagement from "../userManagement/UserManagement"
-import SpamManagement from "../spamManagement/SpamManagement"
 import AdminProfile from "../adminProfile/AdminProfile"
 import Posts from "../../common/post/Posts"
 import RightSideBar from "../../common/rightSideBar/RightSideBar"
-import InputPost from "../../common/post/InputPost"
-import UpdatePost from "../../common/post/UpdatePost"
 import Chat from "../../common/chat/Chat"
 import Notify from "../../common/notify/Notify"
 import Search from "../../common/search/Search"
@@ -137,7 +134,7 @@ const LeftSideBar = () => {
                         <strong>{auth.user.fullName}</strong>
                     </a>
                     <ul className="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-                        <li><a className="dropdown-item" href="#">Cài đặt</a></li>
+                        {/* <li><a className="dropdown-item" href="#">Cài đặt</a></li> */}
                         <li><a className="dropdown-item" href="#" onClick={(e) => { e.preventDefault(); setAdminMenu(10) }}>Thông tin</a></li>
                         <li><hr className="dropdown-divider" /></li>
                         <li><p className="dropdown-item" style={{ marginBottom: 0, cursor: "pointer" }} onClick={() => dispatch(logout())}>Đăng xuất</p></li>
@@ -147,11 +144,7 @@ const LeftSideBar = () => {
 
             {adminMenu === 1 && (
                 <>
-                    <InputPost />
-                    <UpdatePost />
-                    {homePosts.result === 0 ?
-                        <h4 className="text-center w-100 py-4">Không có bài đăng nào</h4> 
-                        : <Posts />}
+                    <Posts />
                     <div style={{width: "400px", height: "100%"}}>
                         <RightSideBar />
                     </div>
@@ -159,11 +152,7 @@ const LeftSideBar = () => {
             )}
             {adminMenu === 2 && (
                 <>
-                    <InputPost />
-                    <UpdatePost />
-                    {homePosts.result === 0 ?
-                        <h4 className="text-center w-100 py-4">Không có bài đăng nào</h4>
-                        : <Posts />}
+                    <Posts />
                     <div className="col-md-2">
                         <RightSideBar />
                     </div>

@@ -98,7 +98,7 @@ const Login = () => {
                                 <button type="submit" className="btn btn-primary btn-lg"
                                 style={{width: "100%"}}>Đăng nhập</button>
                             </div>
-                            <div className="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
+                            {/* <div className="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
                                 <p className="lead fw-normal mb-0 me-3">Đăng nhập với</p>
                                 <button type="button" className="btn btn-primary btn-floating mx-1">
                                 <i className="fab fa-facebook-f"></i>
@@ -111,7 +111,7 @@ const Login = () => {
                                 <button type="button" className="btn btn-primary btn-floating mx-1">
                                 <i className="fab fa-linkedin-in"></i>
                                 </button>
-                            </div>
+                            </div> */}
 
                             <p className="small fw-bold mt-2 pt-1 mb-0">Bạn chưa đăng ký tài khoản? <a href="/regist"
                                     className="link-danger">Đăng ký ngay</a></p>

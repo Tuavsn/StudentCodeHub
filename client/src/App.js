@@ -44,12 +44,12 @@ function App() {
           <div className='main'>
 
               <Routes>
+                <Route exact path='/regist' Component={Regist} />
                 <Route exact path='/' Component={userType === "ADMIN" ?
                   auth.token ? AdminHome : Login
                   : auth.token ? UserHome : Login} />
                 {(userType === "ADMIN" || userType === "USER") && auth.user.status === 0 && (
                   <>
-                    <Route exact path='/regist' Component={Regist} />
                     <Route exact path='/user/:id' Component={UserProfileDetail} />
                     <Route exact path='/post/:id' Component={PostDetail}/>
                     <Route exact path="/:page" Component={<PrivateRouter />} />

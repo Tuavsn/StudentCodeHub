@@ -28,12 +28,6 @@ const adminReducer = (state = initialState, action) => {
                 all_users: action.payload
             }
 
-        case ADMIN_TYPES.DELETE_POST:
-            return {
-                ...state,
-                spam_posts: DeleteData(state.spam_posts, action.payload._id)
-            }
-
         case ADMIN_TYPES.BLOCK_USER:
             return {
                 ...state,
@@ -44,6 +38,12 @@ const adminReducer = (state = initialState, action) => {
             return {
                 ...state,
                 all_users: EditData(state.all_users, action.payload.id, action.payload)
+            }
+        
+        case ADMIN_TYPES.GET_TOTAL_ACTIVE_USERS:
+            return {
+                ...state,
+                total_active_users: action.payload
             }
 
         default:

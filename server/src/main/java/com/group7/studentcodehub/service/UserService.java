@@ -42,10 +42,11 @@ public class UserService {
 		if (userName != null) {
 			var User = userRepository.findByUserName(userName).orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng"));
 			if (jwtService.isTokenValid(refreshToken, User)) {
-				if(userInfo.getPassword() != null) {
+				if(userInfo.getPassword() != "") {
 					User.setPassword(passwordEncoder.encode(userInfo.getPassword()));					
 				}
 				User.setFullName(userInfo.getFullName());
+				User.setGender(userInfo.getGender());
 				User.setAvatar(userInfo.getAvatar());
 				User.setEmail(userInfo.getEmail());
 				User.setGender(userInfo.getGender());

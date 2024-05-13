@@ -28,8 +28,8 @@ const Regist = () => {
     
         // Kiểm tra validation
         let errors = {};
-    
-        const nameRegex = /^[a-zA-Z\sàáạãảăắằẵặâấầẩẫậèéẹẻẽêềếểễệđìíịỉĩòóọỏõôốồổỗộơớờởỡợùúụủũưứừửữựỳỹỷỵ]*$/;
+
+        const nameRegex = /^[a-zA-Z0-9\sàáạãảăắằẵặâấầẩẫậèéẹẻẽêềếểễệđìíịỉĩòóọỏõôốồổỗộơớờởỡợùúụủũưứừửữựỳỹỷỵ]*$/;
         const usernameRegex = /^[a-zA-Z0-9_-]*$/; // Chỉ chấp nhận ký tự chữ, số, gạch dưới (_) và dấu gạch ngang (-)
         const passwordRegex = /^[a-zA-Z0-9!@#$%^&*()_+-=]*$/; // Chỉ chấp nhận ký tự chữ, số và một số ký tự đặc biệt
     
@@ -37,8 +37,8 @@ const Regist = () => {
             errors.fullName = "Vui lòng nhập tên đầy đủ của bạn";
         } else if (!nameRegex.test(fullName)) {
             errors.fullName = "Tên không được chứa ký tự đặc biệt";
-        } else if (fullName.length > 50) {
-            errors.fullName = "Tên quá dài, vui lòng nhập ít hơn 50 ký tự";
+        } else if (fullName.length > 20) {
+            errors.fullName = "Tên quá dài, vui lòng nhập ít hơn 20 ký tự";
         }
         if (!userName) {
             errors.userName = "Vui lòng nhập tên đăng nhập";

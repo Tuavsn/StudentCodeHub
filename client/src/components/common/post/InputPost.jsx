@@ -10,6 +10,7 @@ const InputPost = () => {
     const editorRef = useRef(null);
     const [editorData, setEditorData] = useState('');
     const [headerInput, setHeaderInput] = useState('');
+    const [errors, setErrors] = useState({});
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
 
@@ -29,8 +30,10 @@ const InputPost = () => {
     }
 
     const handleHeaderInputChange = (e) => {
-        const data = e.target.value
-        setHeaderInput(data)
+        e.preventDefault();
+        const { name, value } = e.target
+        setHeaderInput(value)
+        setErrors({...errors, [name]: ""})
     }
 
     const handleEditorChange = (e, editor) => {
@@ -40,17 +43,39 @@ const InputPost = () => {
 
     const handleButtonClick = (e) => {
         e.preventDefault()
-        dispatch(createPost({postImages: selectedFiles, header: headerInput, content: editorData, auth: auth}))
-        setSelectedFiles([]);
-        setImagePreviews([]);
-        const fileInput = document.getElementById('fileInput');
-        const header = document.getElementById('headerInput');
-        const editor = editorRef.current.editor;
-        fileInput.value = '';
-        header.value = '';
-        editor.setData('')
-        setEditorData('')
-        setHeaderInput('')
+
+        let errors  = {}
+
+        const headerRegex = /^[a-zA-Z0-9\sàáạãảăắằẵặâấầẩẫậèéẹẻẽêềếểễệđìíịỉĩòóọỏõôốồổỗộơớờởỡợùúụủũưứừửữựỳỹỷỵ]*$/;
+
+        if(!headerInput) {
+            errors.headerInput = "Vui lòng nhập tiêu đề cho bài post"
+        } else if (!headerRegex.test(headerInput)) {
+            errors.headerInput = "Tiêu đề bài post không được chứa ký tự đặc biệt"
+        } else if (headerInput.length > 90) {
+            errors.headerInput = "Tiêu đề quá dài, vui lòng nhập ít hơn 90 ký tự"
+        }
+        if (Object.keys(errors).length === 0) {
+            dispatch(createPost({postImages: selectedFiles, header: headerInput, content: editorData, auth: auth}))
+            
+            setSelectedFiles([]);
+            
+            setImagePreviews([]);
+            
+            // Reset input
+            const fileInput = document.getElementById('fileInput');
+            const header = document.getElementById('headerInput');
+            const close = document.getElementById('closeInputPost')
+            const editor = editorRef.current.editor;
+            fileInput.value = '';
+            header.value = '';
+            editor.setData('')
+            setEditorData('')
+            setHeaderInput('')
+            close.click()
+        } else {
+            setErrors(errors)
+        }
     }
 
     const handleCancelPost = (e) => {
@@ -83,11 +108,12 @@ const InputPost = () => {
                 data-bs-target="#exampleModalCenter">
                 <i className="fa-solid fa-plus" style={{ color: "#fff" }}></i>
             </div>
-            <div className="modal fade" id="exampleModalCenter" tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div className="modal fade" id="exampleModalCenter" tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
                 <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title flex-grow-1 text-center" id="exampleModalLongTitle">Bài Post mới</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeInputPost" onClick={handleCancelPost}></button>
                         </div>
                         <div className="modal-body">
                             <h4>Ảnh bìa:</h4>
@@ -115,17 +141,18 @@ const InputPost = () => {
                                 </div>
                             )}
                             <h4>Tiêu đề</h4>
-                            <input id="headerInput" className="mb-2 mb-3 p-2 w-100" type="text" onChange={(e) => handleHeaderInputChange(e)}></input>
+                                <input id="headerInput" name="headerInput" className="mb-2 p-2 w-100" type="text" onChange={(e) => handleHeaderInputChange(e)}></input>
+                                {errors.headerInput && <small style={{fontWeight: "bold"}} className="text-danger">{errors.headerInput}</small>}
                             <h4>Nội dung</h4>
-                            <CKEditor
-                                editor={ClassicEditor}
-                                onChange={handleEditorChange}
-                                ref={editorRef}
-                            />
+                                <CKEditor
+                                    editor={ClassicEditor}
+                                    onChange={handleEditorChange}
+                                    ref={editorRef}
+                                />
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" onClick={handleCancelPost} data-bs-dismiss="modal">Huỷ</button>
-                            <button type="button" className="btn btn-primary" onClick={handleButtonClick} data-bs-dismiss="modal">Tạo Post</button>
+                            <button type="button" className="btn btn-primary" onClick={handleButtonClick}>Tạo Post</button>
                         </div>
                     </div>
                 </div>

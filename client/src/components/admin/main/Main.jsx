@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import userlogo from "../../../images/user.png"
 import postlogo from "../../../images/post.png"
 import code from "../../../images/code.png"
+import submissionlogo from "../../../images/code_submission.png"
 import Chart from "../chart/Chart"
 
 const Main = () => {
@@ -76,13 +77,13 @@ const Main = () => {
                 </div>
                 {/* Total code submission */}
                 <div className="col-xl col-sm-6 mb-xl-0 mb-4" style={{cursor: "pointer"}}>
-                    <div className="card" style={isHover === "totalcode" ? {height: "100%", boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px" } : {height: "100%"}}
-                    onMouseEnter={() => setIsHover('totalcode')}
+                    <div className="card" style={isHover === "totalcodesubmission" ? {height: "100%", boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px" } : {height: "100%"}}
+                    onMouseEnter={() => setIsHover('totalcodesubmission')}
                     onMouseLeave={() => setIsHover('')}>
                         <div className="card-body p-1">
                             <div className="row">
                                 <div className="col-4 text-end">
-                                    <img style={{width: "90%"}} src={code}/>
+                                    <img style={{width: "90%"}} src={submissionlogo}/>
                                 </div>
                                 <div className="col-8" style={{overflow: "hidden"}}>
                                     <span style={{fontSize: "1.2rem", fontWeight: "500"}}>Code submission</span><hr />

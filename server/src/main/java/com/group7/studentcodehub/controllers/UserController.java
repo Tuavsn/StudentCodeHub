@@ -42,7 +42,6 @@ public class UserController {
 			@RequestBody UpdateInfoDto userInfo,
 			HttpServletRequest request
 	) throws IOException, Exception {
-		System.out.println(userInfo.getAvatar());
 		userService.updateInfo(userInfo, request);
 		java.util.Map<String, Object> response = new java.util.HashMap<>();
 		response.put("msg", "Cập nhật thông tin thành công !!!");

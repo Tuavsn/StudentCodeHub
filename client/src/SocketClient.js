@@ -10,6 +10,7 @@ import { MESSAGE_TYPES } from "./redux/action/messageAction";
 import { NOTIFY_TYPES } from "./redux/action/notifyAction";
 import { getConversations } from "./redux/action/messageAction";
 import { setSocketService } from "./redux/action/socketAction";
+import { ADMIN_TYPES } from "./redux/action/adminAction";
 
 const SocketClient = ({ children }) => {
     const { auth } = useSelector((state) => state)
@@ -33,6 +34,10 @@ const SocketClient = ({ children }) => {
 
     //!ActiveUser
     const getActiveUser = (payload) => {
+        dispatch({
+            type: ADMIN_TYPES.GET_TOTAL_ACTIVE_USERS,
+            payload: JSON.parse(payload.body)
+        })
         dispatch({
             type: MESSAGE_TYPES.GET_ACTIVE_USER,
             payload: JSON.parse(payload.body)

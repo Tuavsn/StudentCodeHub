@@ -10,6 +10,8 @@ const Search = () => {
     const [search, setSearch] = useState('')
     const [userSearchResult, setUserSearchResult] = useState([])
     const [suggestionUsers, setSuggestionUsers] = useState([])
+    const [isHover, setIsHover] = useState(null)
+    const imageApiUrl = process.env.REACT_APP_IMAGE_URL
 
     const handleInputChange = (e) => {
         const input = e.target.value
@@ -67,9 +69,13 @@ const Search = () => {
                         </thead>
                         <tbody>
                             {userSearchResult.length > 0 && userSearchResult.map((user, index) => (
-                                <tr key={index} style={{cursor: "pointer"}} onClick={() => navigate(`user/${user.id}`)}>
-                                    <td><img src={user.avatar} style={{width: "3rem", height: "3rem", borderRadius: "10%", objectFit: "cover"}} /></td>
-                                    <td>{user.fullName}</td>
+                                <tr key={index} style={{cursor: "pointer"}} onClick={() => navigate(`user/${user.id}`)}
+                                    onMouseEnter={() => setIsHover(user.id)} 
+                                    onMouseLeave={() => setIsHover(null)}>
+                                    <td>
+                                        <img src={`${imageApiUrl}/${user.avatar}`} style={{width: "3rem", height: "3rem", borderRadius: "10%", objectFit: "cover"}} />
+                                    </td>
+                                    <td className={`${isHover === user.id ? 'text-primary': ''}`}>{user.fullName}</td>
                                     <td>{user.role.toLowerCase()}</td>
                                 </tr>
                             ))}
@@ -91,9 +97,13 @@ const Search = () => {
                         </thead>
                         <tbody>
                             {suggestionUsers.length > 0 && suggestionUsers.map((user, index) => (
-                                <tr key={index} style={{cursor: "pointer"}} onClick={() => navigate(`user/${user.id}`)}>
-                                    <td><img src={user.avatar} style={{width: "3rem", height: "3rem", borderRadius: "10%", objectFit: "cover"}} /></td>
-                                    <td>{user.fullName}</td>
+                                <tr key={index} style={{cursor: "pointer"}} onClick={() => navigate(`user/${user.id}`)}
+                                    onMouseEnter={() => setIsHover(user.id)} 
+                                    onMouseLeave={() => setIsHover(null)}>
+                                    <td>
+                                        <img src={`${imageApiUrl}/${user.avatar}`} style={{width: "3rem", height: "3rem", borderRadius: "10%", objectFit: "cover"}} />
+                                    </td>
+                                    <td className={`${isHover === user.id ? 'text-primary': ''}`}>{user.fullName}</td>
                                     <td>{user.role.toLowerCase()}</td>
                                 </tr>
                             ))}

@@ -48,7 +48,7 @@ const ChatDetail = ({recipient}) => {
         <>
             {/* Messages */}
             <div className="position-relative h-100">
-                <div className="chat-messages p-4 h-100" style={{overflowY: "scroll"}} ref={messagesContainerRef}>
+                <div className="chat-messages p-4 h-100" style={{overflowY: "scroll", scrollbarWidth: 'thin', msOverflowStyle: 'thin'}} ref={messagesContainerRef}>
 
                     {userMessage.messages.filter((message) => {
                         return message.source.id === recipient.id || message.target.id === recipient.id

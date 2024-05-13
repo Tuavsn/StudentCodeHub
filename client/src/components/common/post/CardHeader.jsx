@@ -11,8 +11,9 @@ const CardHeader = ({ post }) => {
     const { auth, socket } = useSelector((state) => state)
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const imageApiUrl = process.env.REACT_APP_IMAGE_URL
     const [isHover, setIsHover] = useState(null)
+    const imageApiUrl = process.env.REACT_APP_IMAGE_URL
+    const appUrl = process.env.REACT_APP_URL
     moment.locale('vi')
 
     const handleEditPost = () => {
@@ -27,11 +28,10 @@ const CardHeader = ({ post }) => {
         dispatch(reportPost({ post, auth }))
     }
     const handleCopyLink = () => {
-        const postLink = "localhost:3000"
+        const postLink = appUrl
         navigator.clipboard.writeText(postLink+'/post/'+post.id);
     }
     return (
-        <>
         <div className="d-flex align-items-center justify-content-between">
             <div className="d-flex align-items-stretch gap-4">
                 <div>
@@ -56,7 +56,7 @@ const CardHeader = ({ post }) => {
             <div className="dropdown">
                 <span style={{fontSize: "2rem", fontWeight: "bold", cursor: "pointer", userSelect: "none"}} id="moreLink" data-bs-toggle="dropdown">...</span>
                 <div className="dropdown-menu">
-                    {auth.user.id === post.user.id || auth.user.role === "ADMIN" ? (
+                    {auth.user.id === post.user.id ? (
                         <>
                             <div className="dropdown-item" style={{cursor: "pointer", userSelect: "none"}} onClick={handleEditPost} data-bs-toggle="modal" data-bs-target={`#updatePostModal`}>
                                 <span>Chỉnh sửa</span>
@@ -70,6 +70,11 @@ const CardHeader = ({ post }) => {
                         </>
                     ) : (
                         <>
+                            {auth.user.role === "ADMIN" && (
+                                <div className="dropdown-item" style={{cursor: "pointer", userSelect: "none"}} onClick={handleDeletePost}>
+                                    <span>Xoá bài</span>
+                                </div>
+                            )}
                             <div className="dropdown-item" style={{cursor: "pointer", userSelect: "none"}} onClick={handleCopyLink}>
                                 <span>Copy Link</span>
                             </div>
@@ -81,7 +86,6 @@ const CardHeader = ({ post }) => {
                 </div>
             </div>
         </div>
-        </>
     )
 }
 

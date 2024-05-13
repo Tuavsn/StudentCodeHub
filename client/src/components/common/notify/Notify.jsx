@@ -27,7 +27,7 @@ const Notify = () => {
     }
 
     return (                 
-        <section style={{margin: "2rem auto", width: "60%", overflowY: "scroll"}}>
+        <section style={{margin: "2rem auto", width: "60%", overflowY: "scroll", scrollbarWidth: 'thin', msOverflowStyle: 'thin'}}>
             <div className="w-100">
                 <h3 className="m-b-50 text-center">Thông báo mới nhất <i className="fa fa-bell text-muted"></i></h3>
 
@@ -36,7 +36,7 @@ const Notify = () => {
                     {notify.data.length > 0 ? (
                         <>
                             <a href="#" style={{padding: "1rem"}} onClick={() => handleDeleteNotifies()}>Xoá tất cả thông báo</a>
-                            {notify.data.map((item, index) => (
+                            {notify.data.reverse().map((item, index) => (
                                 <div className={`notification-list ${item.status == 0 ? 'notification-list--unread' : ''}`} key={index} style={{cursor: "pointer", position: "relative"}}>
                                     <div className="notification-list_content" onClick={() => handleIsReadNotify(item)}>
                                         <div className="notification-list_img">
@@ -45,7 +45,7 @@ const Notify = () => {
                                         <div className="notification-list_detail">
                                             <p>Từ: <b>{item.source.fullName}</b></p>
                                             <p className="text-muted">{item.content}</p>
-                                            <p className="text-muted"><small>{moment(item.creatAt).fromNow()}</small></p>
+                                            <p className="text-muted"><small>{moment(item.createAt).fromNow()}</small></p>
                                         </div>
                                     </div>
                                     <div className="dropdown" style={{position: "absolute", right: 10, top: 0, bottom: 0}}>
@@ -58,9 +58,6 @@ const Notify = () => {
                                     </div>
                                 </div>
                             ))}
-                            {/* <div className="text-center">
-                                <a href="#!" className="dark-link">Xem thêm</a>
-                            </div> */}
                         </>
                     ) : (<div className="text-center">Chưa có thông báo nào</div>)}
                     
