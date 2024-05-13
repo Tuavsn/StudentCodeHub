@@ -7,7 +7,7 @@ import moment from "moment"
 import 'moment/locale/vi'
 const { navigator } = window;
 
-const CardHeader = ({ post }) => {
+const CardHeader = ({ post, type }) => {
     const { auth, socket } = useSelector((state) => state)
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -22,7 +22,7 @@ const CardHeader = ({ post }) => {
     const handleDeletePost = () => {
         if(window.confirm("Bạn có chắc?"))
         dispatch(deletePost({ post, auth, socket }))
-        navigate("/")
+        if( type === "detailPost" ) {navigate("/")}
     }
     const handleReportPost = () => {
         dispatch(reportPost({ post, auth }))

@@ -9,7 +9,7 @@ import InputOutputForm from './InputOutputForm';
 import { useDispatch, useSelector } from 'react-redux';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { createCodeExercise } from '../../../redux/action/codeExerciseAction';
-import { max, set } from 'date-fns';
+import { GLOBALTYPES } from '../../../redux/action/globalTypes';
 
 const ExerciseForm = ({ setNewExercise }) => {
     const { auth } = useSelector(state => state);
@@ -22,12 +22,12 @@ const ExerciseForm = ({ setNewExercise }) => {
         difficulty: '',
         tags: '',
         totalScore: 0,
-        timeLimitEnabled: false,
-        timeLimitValue: 2000,
-        memoryLimitEnabled: false,
-        memoryLimitValue: 128000,
-        maxFileSizeValue: 1024,
-        maxFileSizeEnabled: false,
+        time_limit_enable: false,
+        time_limit_value: 2000,
+        memory_limit_enable: false,
+        memory_limit_value: 128000,
+        max_file_size_value: 1024,
+        max_file_size_enable: false,
         enable_network: true
 
     });
@@ -44,6 +44,30 @@ const ExerciseForm = ({ setNewExercise }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         setLoading(true);
+
+        if (example.length < 1) {
+
+            dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: 'Example must be at least 1' });
+            setLoading(false);
+            return;
+        }
+        if (example.input === '' || example.output === '') {
+            dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: 'Example input and output must not be empty' });
+            setLoading(false);
+            return;
+        }
+        if (testCases.length < 4) {
+            dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: 'Test cases must be at least 4' });
+            setLoading(false);
+            return;
+        }
+        for (let i = 0; i < testCases.length; i++) {
+            if (testCases[i].input === '' || testCases[i].output === '') {
+                dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: 'Test case input and output must not be empty' });
+                setLoading(false);
+                return;
+            }
+        }
         const formFields = {
             title: formData.title,
             description: formData.description,
@@ -51,19 +75,18 @@ const ExerciseForm = ({ setNewExercise }) => {
             tags: formData.tags,
             totalScore: formData.totalScore,
             otherProps: JSON.stringify({
-                timeLimit: {
-                    enabled: formData.timeLimitEnabled,
-                    value: formData.timeLimitValue
+                time_limit: {
+                    enabled: formData.time_limit_enable,
+                    value: formData.time_limit_value
                 },
-                memoryLimit: {
-                    enabled: formData.memoryLimitValue,
-                    value: formData.memoryLimitValue
+                memory_limit: {
+                    enabled: formData.memory_limit_enable,
+                    value: formData.memory_limit_value
                 },
-                maxFileSize: {
-                    enabled: formData.maxFileSizeEnabled,
-                    value: formData.maxFileSizeValue
-                },
-                enable_network: formData.enable_network
+                max_file_size: {
+                    enabled: formData.memory_limit_enable,
+                    value: formData.max_file_size_value
+                }
             }),
             testCases: JSON.stringify(testCases),
             example: JSON.stringify(example),
@@ -165,23 +188,23 @@ const ExerciseForm = ({ setNewExercise }) => {
                         <div className="flex items-center">
                             <FormControlLabel
                                 control={
-                                    <IOSSwitch sx={{ m: 1 }} type="checkbox" checked={formData.timeLimitEnabled} onChange={handleChange} name="timeLimitEnabled" />
+                                    <IOSSwitch sx={{ m: 1 }} type="checkbox" checked={formData.memory_limit_enable} onChange={handleChange} name="memory_limit_enable" />
                                 }
                                 label="Time limit (Optional, default:2000 miliseconds):"
                             />
                         </div>
                         {
-                            formData.timeLimitEnabled &&
+                            formData.memory_limit_enable &&
                             < FormControl sx={{ m: 1, width: '25ch' }} variant="filled">
                                 <FilledInput
                                     type='number'
-                                    name='timeLimitValue'
+                                    name='time_limit_value'
                                     endAdornment={<InputAdornment position="end">miliseconds</InputAdornment>}
                                     aria-describedby="filled-weight-helper-text"
                                     inputProps={{
                                         'aria-label': 'weight',
                                     }}
-                                    value={formData.timeLimitValue}
+                                    value={formData.time_limit_value}
                                     onChange={handleChange}
                                 />
                             </FormControl>
@@ -191,22 +214,22 @@ const ExerciseForm = ({ setNewExercise }) => {
                         <div className="flex items-center">
                             <FormControlLabel
                                 control={
-                                    <IOSSwitch sx={{ m: 1 }} type="checkbox" checked={formData.maxFileSizeEnabled} onChange={handleChange} name="maxFileSizeEnabled" />
+                                    <IOSSwitch sx={{ m: 1 }} type="checkbox" checked={formData.memory_limit_enable} onChange={handleChange} name="memory_limit_enable" />
                                 }
                                 label="FileSize (Optional, default: 1024 kilobytes)"
                             />
                         </div>
-                        {formData.maxFileSizeEnabled &&
+                        {formData.memory_limit_enable &&
                             <FormControl sx={{ m: 1, width: '25ch' }} variant="filled">
                                 <FilledInput
                                     type='number'
-                                    name='maxFileSizeValue'
+                                    name='max_file_size_value'
                                     endAdornment={<InputAdornment position="end">kilobytes</InputAdornment>}
                                     aria-describedby="filled-weight-helper-text"
                                     inputProps={{
                                         'aria-label': 'weight',
                                     }}
-                                    value={formData.maxFileSizeValue}
+                                    value={formData.max_file_size_value}
                                     onChange={handleChange}
                                 />
                             </FormControl>
@@ -217,22 +240,22 @@ const ExerciseForm = ({ setNewExercise }) => {
                         <div className="flex items-center">
                             <FormControlLabel
                                 control={
-                                    <IOSSwitch sx={{ m: 1 }} type="checkbox" checked={formData.memoryLimitEnabled} onChange={handleChange} name="memoryLimitEnabled" />
+                                    <IOSSwitch sx={{ m: 1 }} type="checkbox" checked={formData.memory_limit_enable} onChange={handleChange} name="memory_limit_enable" />
                                 }
                                 label="Memory Limit - RAM limit (Optional, default: 128000 kilobytes)"
                             />
                         </div>
-                        {formData.memoryLimitEnabled &&
+                        {formData.memory_limit_enable &&
                             <FormControl sx={{ m: 1, width: '25ch' }} variant="filled">
                                 <FilledInput
                                     type='number'
-                                    name='memoryLimitValue'
+                                    name='memory_limit_value'
                                     endAdornment={<InputAdornment position="end">kilobytes</InputAdornment>}
                                     aria-describedby="filled-weight-helper-text"
                                     inputProps={{
                                         'aria-label': 'weight',
                                     }}
-                                    value={formData.memoryLimitValue}
+                                    value={formData.memory_limit_value}
                                     onChange={handleChange}
                                 />
                             </FormControl>

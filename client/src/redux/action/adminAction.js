@@ -14,6 +14,7 @@ export const getMonthlyData = (token) => async(dispatch) => {
     try {
         dispatch({ type: GLOBALTYPES.LOADING, payload: true })
         const res = await getDataAPI("admin/dashboard", token)
+        console.log(res)
         dispatch({ type: ADMIN_TYPES.GET_MONTHLY_DATA, payload: res.data })
         dispatch({ type: GLOBALTYPES.LOADING, payload: false })
     } catch (err) {

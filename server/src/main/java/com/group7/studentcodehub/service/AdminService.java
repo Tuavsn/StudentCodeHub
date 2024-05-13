@@ -54,13 +54,14 @@ public class AdminService {
             long count = (long) result[1];
             codeExercisesPerMonth.put(month, count);
         }
-        
+
+
         for (Object[] result : totalCodeSubmissionPerMonthResults) {
             int month = (int) result[0];
             long count = (long) result[1];
             codeSubmissionsPerMonth.put(month, count);
         }
-        
+
         long totalPosts = postRepository.findAll().size();
         
         long totalCodeExercises = codeExerciseRepository.findAll().size();
@@ -89,7 +90,7 @@ public class AdminService {
             monthlyDataList.add(monthlyData);
         }
         resultMap.put("monthlyData", monthlyDataList);
-        
+
         return resultMap;
 	}
 	

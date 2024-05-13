@@ -60,7 +60,7 @@ const Regist = () => {
     
         if (Object.keys(errors).length === 0) {
             // Nếu không có lỗi, gửi form
-            dispatch(regist(userData));
+            history("/otp-confirmation", { state: { email: email, otp_type: "REGIST", userData: userData } })
         } else {
             // Nếu có lỗi, hiển thị thông báo lỗi
             setErrors(errors);

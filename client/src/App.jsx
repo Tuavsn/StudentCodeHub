@@ -9,8 +9,10 @@ import Regist from './pages/Regist';
 import Alert from './components/common/alert/Alert';
 import SocketClient from './SocketClient'
 import Loading from './components/common/alert/Loading'
+import OTPConfirm from './components/common/otp/otp-confirmation'
 import UserProfileDetail from './pages/UserProfileDetail'
 import PostDetail from './pages/PostDetail'
+import ResetPass from './pages/reset-pass'
 import PrivateRouter from './router/PrivateRouter'
 import { getUserInfo } from './redux/action/authAction'
 import { getCodeExerCises, getQueueCodeExercises } from './redux/action/codeExerciseAction'
@@ -45,6 +47,8 @@ function App() {
 
               <Routes>
                 <Route exact path='/regist' Component={Regist} />
+                <Route exact path='/reset-pass' Component={ResetPass} />
+                <Route exact path='/otp-confirmation' Component={OTPConfirm} />
                 <Route exact path='/' Component={userType === "ADMIN" ?
                   auth.token ? AdminHome : Login
                   : auth.token ? UserHome : Login} />

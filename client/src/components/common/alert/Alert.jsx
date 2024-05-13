@@ -15,7 +15,8 @@ const Alert = () => {
                 <Toast
                     msg={{ title: "Xảy ra lỗi!" , body: alert.error }}
                     handleShow={() => dispatch({ type: GLOBALTYPES.RESET_ALERT })}
-                    bgColor="bg-danger" 
+                    icon="fa-solid fa-circle-xmark"
+                    textColor="text-danger"
                 />
             )}
 
@@ -23,7 +24,8 @@ const Alert = () => {
                 <Toast
                     msg={{ title: "Thành công!", body: alert.success }}
                     handleShow={() => dispatch({ type: GLOBALTYPES.RESET_ALERT })}
-                    bgColor="bg-success" 
+                    icon="fa-solid fa-check" 
+                    textColor="text-success"
                 />
             )}
 
@@ -31,7 +33,8 @@ const Alert = () => {
                 <Toast
                     msg={{ title: "Bạn có một thông báo mới!", body: alert.notify }}
                     handleShow={() => dispatch({ type: GLOBALTYPES.RESET_ALERT })}
-                    bgColor="bg-success" 
+                    icon="fa-solid fa-bell"
+                    textColor="text-primary"
                 />
             )}
         </div>

@@ -38,7 +38,7 @@ export const ExerciseDetail = ({ exercise }) => {
                         ))}
                     </div>
                 </div>
-            </div>
+            </div >
         </div >
     ) : null
 }

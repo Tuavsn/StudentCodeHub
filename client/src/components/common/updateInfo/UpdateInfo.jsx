@@ -14,7 +14,6 @@ const UpdateInfo = ({user}) => {
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
     const [errors, setErrors] = useState({});
-    const [success, setSuccess] = useState("")
     const dispatch = useDispatch()
 
     const handleChangeInput = (e) => {
@@ -45,7 +44,6 @@ const UpdateInfo = ({user}) => {
         const fileInput = document.getElementById('profileInput');
         fileInput.value = '';
         setUserData(initialState)
-        setSuccess("")
         setIsUpdate([])
     }
 
@@ -98,11 +96,13 @@ const UpdateInfo = ({user}) => {
             
             const res = await postDataAPI("user/updateInfo", user, auth.token)
             dispatch(getUserInfo())
-            setSuccess(res.data.msg)
+            dispatch({type: GLOBALTYPES.SUCCESS_ALERT, payload: res.data.msg})
             setSelectedFiles([]);
             setImagePreviews([]);
             const fileInput = document.getElementById('profileInput');
             fileInput.value = '';
+            const close = document.getElementById('closeUpdateInfo')
+            close.click()
         } else {
             // Nếu có lỗi, hiển thị thông báo lỗi
             setErrors(errors);
@@ -119,7 +119,7 @@ const UpdateInfo = ({user}) => {
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title flex-grow-1 text-center" id="exampleModalLongTitle">Cập nhật thông tin cá nhân</h5>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCancelUpdateInfo}></button>
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeUpdateInfo" onClick={handleCancelUpdateInfo}></button>
                     </div>
                     <div className="modal-body" style={{overflowY: "scroll"}}>
                         {/* image input */}
@@ -204,7 +204,6 @@ const UpdateInfo = ({user}) => {
                         </div>
                     </div>
                     <div className="modal-footer">
-                        {success !== "" && <small style={{fontWeight: "bold"}} className="text-success">{success}</small>}
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCancelUpdateInfo}>Huỷ</button>
                         <button type="button" className="btn btn-primary" onClick={handleSubmit}>Cập nhật</button>
                     </div>

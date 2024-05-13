@@ -38,7 +38,7 @@ public class CodeExerciseService {
 
 	@Autowired
 	private CodeSubmissionRepository codeSubmissionRepository;
-	
+
 	ZoneId vietnamZone = ZoneId.of("Asia/Ho_Chi_Minh");
 
 	public List<code_exercise> getApprovedCodeExercise() {
@@ -110,12 +110,13 @@ public class CodeExerciseService {
 
 			code_submission codeSubmission = code_submission.builder()
 					.code(code)
-					.createAt(LocalDateTime.now(vietnamZone))
 					.codeExercise(codeExercise)
 					.user(User)
 					.language_id(language_id)
 					.score(totalScore * (1.0 * accepted / testCasesCount))
-					.result(results.toString()).build();
+					.result(results.toString())
+					.createAt(LocalDateTime.now(vietnamZone))
+					.build();
 			codeSubmissionRepository.save(codeSubmission);
 			return codeSubmission;
 		} catch (Exception e) {

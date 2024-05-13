@@ -1,5 +1,7 @@
 package com.group7.studentcodehub.service;
 
+import com.google.gson.JsonObject;
+import com.group7.studentcodehub.util.EncodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -42,6 +44,21 @@ public class AuthenticationService {
 	private JwtService jwtService;
 	@Autowired
 	private AuthenticationManager authenticationManager;
+	@Autowired
+	private EmailService emailService;
+
+	private final String RESET_PASSWORD_TYPE = "RESET_PASSWORD";
+	private final String REGIST_TYPE = "REGIST";
+	private final String boundary = "-/-/-/";
+
+	public user getUserByEmail(String email) {
+		try {
+			user u = userRepository.findByEmail(email).orElseThrow();
+			return u;
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
 	public AuthenticationResponse user_regist(UserRegistDto request) {
 		if(!userRepository.findByUserName(request.getUserName()).isEmpty())
@@ -222,6 +239,75 @@ public class AuthenticationService {
 			token.setRevoked(true);
 		});
 		tokenRepository.saveAll(validUserTokens);
+	}
+
+	public String createOTP(int otp_length) {
+		String otp = "";
+		for (int i = 0; i < otp_length; i++) {
+			otp += (int) (Math.random() * 10);
+		}
+		return otp;
+	}
+
+	public String createToken(String email, String otp, String otp_type, int expirationTime) {
+
+		String rawToken = email + boundary + otp + boundary + otp_type + boundary + System.currentTimeMillis()
+				+ boundary + expirationTime;
+		return EncodeUtil.encrypt(rawToken);
+	}
+
+	public void sendOTP(String email, String otp, String otp_type) {
+		if (otp_type.equals(REGIST_TYPE)) {
+			emailService.sendEmail(email, "Mã xác thực đăng ký tài khoản", "Mã xác thực của bạn là: " + otp);
+		} else if (otp_type.equals(RESET_PASSWORD_TYPE)) {
+			emailService.sendEmail(email, "Mã xác thực quên mật khẩu", "Mã xác thực của bạn là: " + otp);
+		} else {
+			emailService.sendEmail(email, "Mã xác thực", "Mã xác thực của bạn là: " + otp);
+		}
+	}
+
+	public JsonObject verifyOTP(String email, String otp, String otp_type, String token) {
+		String rawToken = EncodeUtil.decrypt(token);
+
+		JsonObject response = new JsonObject();
+
+		if (rawToken == null) {
+			response.addProperty("msg", "Token không hợp lệ");
+			return response;
+		}
+
+		String[] parts = rawToken.split(boundary);
+		String token_email = parts[0];
+		String token_otp = parts[1];
+		String token_otp_type = parts[2];
+		long token_time = Long.parseLong(parts[3]);
+		long token_expirationTime = Long.parseLong(parts[4]);
+
+		if (!email.equals(token_email) || !otp_type.equals(token_otp_type)) {
+			response.addProperty("msg", "invalid_token");
+			return response;
+		}
+
+		if (System.currentTimeMillis() - token_time > token_expirationTime) {
+			response.addProperty("msg", "expried_token");
+			return response;
+		}
+
+		if (!otp.equals(token_otp)) {
+			response.addProperty("msg", "invalid_otp");
+			return response;
+		}
+
+		response.addProperty("msg", "success");
+		response.addProperty("email", email);
+		response.addProperty("otp_type", otp_type);
+		return response;
+	}
+
+	public user reset_password(String email, String password) {
+		var User = userRepository.findByEmail(email).orElseThrow();
+		User.setPassword(passwordEncoder.encode(password));
+		return userRepository.save(User);
 	}
 
 }

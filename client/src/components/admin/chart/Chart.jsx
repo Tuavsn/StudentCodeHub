@@ -20,10 +20,10 @@ const chartSetting = {
 
 const valueFormatter = (value) => `${value}`;
 
-const Chart = () => {
-    const { admin } = useSelector((state) => state)
-    const dataset = admin.monthly_data
 
+const Chart = () => {
+  const { admin } = useSelector((state) => state)
+  const dataset = admin.monthly_data
     // useEffect(() => {
 
     // }, admin.total_posts)

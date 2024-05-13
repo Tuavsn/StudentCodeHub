@@ -17,24 +17,28 @@ const InputOutputForm = ({ fields, setFields }) => {
     return (
         <div className='flex flex-col w-full h-max'>
             <div className='flex flex-col p-4 justify-center items-center align-center'>
+                <h6 className='italic'>(Seperate with multi-line)</h6>
                 {fields.map((field, index) => (
                     <div key={index} className='flex flex-row w-full'>
-                        <div className='flex flex-row w-[35%] items-center justify-center'>
-                            <TextField
+                        <div className='flex flex-row w-[35%] items-center justify-center border border-1 h-[10dvh] mx-5'>
+                            <textarea
+                                className='w-full h-full'
                                 label="input"
-                                type="text"
+                                multiline
                                 value={field.input}
                                 onChange={(e) => handleChange(index, 'input', e.target.value)}
                             />
                         </div>
-                        <div className='flex flex-row w-[35%] items-center justify-center'>
-                            <TextField
+                        <div className='flex flex-row w-[35%] items-center justify-center border border-1 h-[10dvh] mx-5'>
+                            <textarea
+                                className='w-full h-full'
                                 label="output"
-                                type="text"
+                                multiline
                                 value={field.output}
                                 onChange={(e) => handleChange(index, 'output', e.target.value)}
                             />
                         </div>
+
                         <div className='flex flex-row w-[10%] items-center justify-center'>
                             <NormalButton type={'button'} children={"Delete"} onClick={() => setFields(fields.filter((_, i) => i !== index))} />
                         </div>
@@ -42,7 +46,7 @@ const InputOutputForm = ({ fields, setFields }) => {
                 ))}
             </div>
             <NormalButton type={'reset'} className={'w-[20%]'} children={"Add more"} onClick={handleAddField} />
-        </div>
+        </div >
     );
 };
 
