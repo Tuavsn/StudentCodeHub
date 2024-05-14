@@ -15,6 +15,7 @@ const CardFooter = ({ post, type }) => {
     const [content, setContent] = useState("")
     const [errors, setErrors] = useState({})
     const [isHover, setIsHover] = useState(null)
+    const imageApiUrl = process.env.REACT_APP_IMAGE_URL
     const [readMore, setReadMore] = useState([])
 
     useEffect(() => {
@@ -122,7 +123,7 @@ const CardFooter = ({ post, type }) => {
                         onMouseEnter={() => setIsHover(comment.id)} 
                         onMouseLeave={() => setIsHover(null)}>
                             <div>
-                                <img src={comment.user.avatar}  style={{width: "3rem", height: "3rem", borderRadius: "50%", objectFit: "cover"}}/>
+                                <img src={`${imageApiUrl}/${comment.user.avatar}`}  style={{width: "3rem", height: "3rem", borderRadius: "50%", objectFit: "cover"}}/>
                             </div>
                             <div style={{minWidth: 0, width: "100%", backgroundColor: "#F0F2F5", padding: ".5rem", borderRadius: "1rem"}}>
                                 <div className="d-flex gap-2 align-items-center">

@@ -147,6 +147,8 @@ export const updatePost = ({ post, header, content, postImages, isNewImage, auth
 
         if(type === "detailPost") {
             dispatch({ type: POST_TYPES.UPDATE_DETAIL_POST, payload: {...res.data.newPost}})
+        } else if (type === "profilePost") {
+            dispatch({ type: POST_TYPES.UPDATE_PROFILE_POST, payload: {...res.data.newPost}})
         } else {
             dispatch({ type: POST_TYPES.UPDATE_POST, payload: {...res.data.newPost}})
         }

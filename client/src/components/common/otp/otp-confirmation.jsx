@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom"
 import logo from '../../../images/studentcodehub_logo.png'
 import { postDataAPI } from "../../../utils/fetchData";
@@ -46,24 +46,30 @@ const OTPConfirm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (otp === "") {
-            dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: "Vui lòng nhập OTP" })
-        } else {
-            dispatch({ type: GLOBALTYPES.LOADING, payload: true })
-            const res = await postDataAPI("auth/verify-otp", { email, otp_type, otp, token, password:"" })
-            console.log(res.data)
-            dispatch({ type: GLOBALTYPES.LOADING, payload: false })
-            if (res.data.msg === "success") {
-                if (otp_type === "RESET_PASSWORD") {
-                    setEnterNewPassword(true)
-                } else {
-                    dispatch({ type: GLOBALTYPES.SUCCESS_ALERT, payload: "Xác thực thành công" })
-                    dispatch(regist(userData))
-                    navigate("/")
-                }
+        try{
+            if (otp === "") {
+                dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: "Vui lòng nhập OTP" })
             } else {
-                dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: "Xác thực không thành công" })
+                dispatch({ type: GLOBALTYPES.LOADING, payload: true })
+                const res = await postDataAPI("auth/verify-otp", { email, otp_type, otp, token, password:"" })
+                console.log(res.data)
+                dispatch({ type: GLOBALTYPES.LOADING, payload: false })
+                if (res.data.msg === "success") {
+                    if (otp_type === "RESET_PASSWORD") {
+                        setEnterNewPassword(true)
+                    } else {
+                        dispatch({ type: GLOBALTYPES.SUCCESS_ALERT, payload: "Xác thực thành công" })
+                        dispatch(regist(userData))
+                        navigate("/")
+                    }
+                } else {
+                    dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: "Xác thực không thành công" })
+                }
             }
+        }
+        catch (err) {
+            dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: "Xác thực không thành công" })
+            dispatch({ type: GLOBALTYPES.LOADING, payload: false })
         }
     }
 
@@ -74,14 +80,18 @@ const OTPConfirm = () => {
         } else if (newPassword.length < 6) {
             dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: "Mật khẩu phải có ít nhất 6 ký tự" })
         } else {
-            dispatch({ type: GLOBALTYPES.LOADING, payload: true })
-            const res = await postDataAPI("auth/reset-password", { email, password: newPassword, token, otp_type, otp })
-            dispatch({ type: GLOBALTYPES.LOADING, payload: false })
-            if (res.data.msg === "success") {
-                dispatch({ type: GLOBALTYPES.SUCCESS_ALERT, payload: "Đổi mật khẩu thành công" })
-                navigate("/")
-            } else {
-                dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: "Đổi mật khẩu không thành công" })
+            try{
+                dispatch({ type: GLOBALTYPES.LOADING, payload: true })
+                const res = await postDataAPI("auth/reset-password", { email, password: newPassword, token, otp_type, otp })
+                dispatch({ type: GLOBALTYPES.LOADING, payload: false })
+                if (res.data.msg === "success") {
+                    dispatch({ type: GLOBALTYPES.SUCCESS_ALERT, payload: "Đổi mật khẩu thành công" })
+                    navigate("/")
+                } else {
+                    dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: "Đổi mật khẩu không thành công" })
+                }
+            }catch (err){
+                dispatch({type: GLOBALTYPES.ERROR_ALERT, payload: "Đổi mật khẩu không thành công"})
             }
         }
     }

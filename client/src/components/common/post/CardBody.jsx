@@ -8,7 +8,7 @@ const CardBody = ({ post, type, index }) => {
     }, [post])
     return (
         type !== "detailPost" ? (
-            <div className="card-body" style={{ borderRadius: "1rem", marginTop: "1rem"}}>
+            <div className="card-body" style={{ borderRadius: "1rem", marginTop: "1rem", overflow: "hidden"}}>
                 {post.postImage.length > 0 && (
                     <div className="d-flex align-items-center justify-content-center" style={{minHeight: "200px", backgroundColor: "#FFF", marginBottom: "1rem"}}>
                         {post.postImage.length > 1 ? (
@@ -50,7 +50,7 @@ const CardBody = ({ post, type, index }) => {
                 }
             </div>
         ) : (
-            <div className="card-body" style={{ borderRadius: "1rem", marginTop: "1rem"}}>
+            <div className="card-body" style={{ borderRadius: "1rem", marginTop: "1rem", overflow: "hidden"}}>
                 {post.postImage.length > 0 && (
                     <div className="d-flex align-items-center justify-content-center" style={{minHeight: "200px", backgroundColor: "#FFF", marginBottom: "1rem"}}>
                         {post.postImage.length > 1 ? (

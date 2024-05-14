@@ -1,5 +1,5 @@
 import { CODE_EXERCISE_TYPES } from "../action/codeExerciseAction";
-import { DeleteData } from "../action/globalTypes";
+import { EditData, DeleteData } from "../action/globalTypes";
 
 const initialState = {
     codeExercises: [],
@@ -34,6 +34,11 @@ const codeExerciseReducer = (state = initialState, action) => {
                 ...state,
                 codeExercises: action.payload.codeExercises,
                 totalItems: action.payload.totalItems
+            }
+        case CODE_EXERCISE_TYPES.UPDATE_EXERCISE:
+            return {
+                ...state,
+                codeExercises: EditData(state.codeExercises, action.payload.id, action.payload.updatedExercise),
             }
 
 

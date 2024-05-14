@@ -36,7 +36,6 @@ public class code_submission {
 	@Column(columnDefinition = "LONGTEXT")
 	private String code;
 	private int language_id;
-	@JsonIgnore
 	@Column(columnDefinition = "LONGTEXT")
 	private String result;
 	private double score;

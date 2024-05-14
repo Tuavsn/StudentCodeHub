@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
-
 const EnhancedTableHead = (props) => {
     const { order, setOrder, orderBy, headCells, setHeadCells, setOrderBy, rows, setRows } = props;
     function descendingComparator(a, b, orderBy) {

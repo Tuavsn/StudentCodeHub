@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import TextField from '@mui/material/TextField';
 import { NormalButton } from '../mui/Button';
 
 const InputOutputForm = ({ fields, setFields }) => {
@@ -24,7 +23,7 @@ const InputOutputForm = ({ fields, setFields }) => {
                             <textarea
                                 className='w-full h-full'
                                 label="input"
-                                multiline
+                                multiline="true"
                                 value={field.input}
                                 onChange={(e) => handleChange(index, 'input', e.target.value)}
                             />
@@ -33,7 +32,7 @@ const InputOutputForm = ({ fields, setFields }) => {
                             <textarea
                                 className='w-full h-full'
                                 label="output"
-                                multiline
+                                multiline="true"
                                 value={field.output}
                                 onChange={(e) => handleChange(index, 'output', e.target.value)}
                             />

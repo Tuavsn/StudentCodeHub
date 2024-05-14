@@ -110,7 +110,7 @@ public class AuthController {
 			U = authenticationService.getUserByEmail(email);
 		}
 
-		if (U == null && !otp_type.equals("regist")) {
+		if (U == null && !otp_type.equals(authenticationService.REGIST_TYPE)) {
 			CreateOtpResponse response = CreateOtpResponse.builder().token(null).build();
 			return ResponseEntity.ok(response);
 		}
@@ -135,6 +135,36 @@ public class AuthController {
 
 		res.put("msg", result.get("msg").getAsString());
 
+		return ResponseEntity.ok(res);
+	}
+
+	@PostMapping("/check-email")
+	public ResponseEntity<Map<String, String>> checkEmail(@RequestBody Map<String, String> body) {
+		String email = body.get("email");
+
+		System.out.println("check email: " + email);
+		user U = authenticationService.getUserByEmail(email);
+		Map<String, String> res = new HashMap<String, String>();
+		if (U != null) {
+			res.put("status", "exist");
+		} else {
+			res.put("status", "valid");
+		}
+		return ResponseEntity.ok(res);
+	}
+
+	@PostMapping("/check-username")
+	public ResponseEntity<Map<String, String>> checkUsername(@RequestBody Map<String, String> body) {
+		String username = body.get("username");
+
+		System.out.println("Check username: " + username);
+		user U = authenticationService.getUserByUsername(username);
+		Map<String, String> res = new HashMap<String, String>();
+		if (U != null) {
+			res.put("status", "exist");
+		} else {
+			res.put("status", "valid");
+		}
 		return ResponseEntity.ok(res);
 	}
 	

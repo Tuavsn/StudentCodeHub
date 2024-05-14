@@ -8,28 +8,38 @@ import FilledInput from '@mui/material/FilledInput';
 import InputOutputForm from './InputOutputForm';
 import { useDispatch, useSelector } from 'react-redux';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { createCodeExercise } from '../../../redux/action/codeExerciseAction';
+import { createCodeExercise, updateExercise } from '../../../redux/action/codeExerciseAction';
 import { GLOBALTYPES } from '../../../redux/action/globalTypes';
+import { useNavigate } from 'react-router-dom';
 
-const ExerciseForm = ({ setNewExercise }) => {
+const ExerciseForm = ({ setNewExercise, exercise }) => {
     const { auth } = useSelector(state => state);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [example, setExample] = useState([{ input: '', output: '' }]);
     const [testCases, setTestCases] = useState([{ input: '', output: '' }]);
-    const [formData, setFormData] = useState({
-        title: '',
-        description: '',
-        difficulty: '',
-        tags: '',
-        totalScore: 0,
-        time_limit_enable: false,
-        time_limit_value: 2000,
-        memory_limit_enable: false,
-        memory_limit_value: 128000,
-        max_file_size_value: 1024,
-        max_file_size_enable: false,
-        enable_network: true
 
+    React.useEffect(() => {
+        if (exercise) {
+            setExample(JSON.parse(exercise?.example));
+            setTestCases(JSON.parse(exercise?.testCases));
+            exercise.otherProps = JSON.parse(exercise?.otherProps);
+        }
+    }, []);
+
+    const [formData, setFormData] = useState({
+        title: exercise?.title || '',
+        description: exercise?.description || '',
+        difficulty: exercise?.difficulty || '',
+        tags: exercise?.tags || '',
+        totalScore: exercise?.totalScore || 10,
+        time_limit_enable: exercise?.otherProps?.time_limit?.enabled || false,
+        time_limit_value: exercise?.otherProps?.time_limit?.value || 2000,
+        memory_limit_enable: exercise?.otherProps?.memory_limit?.enabled || false,
+        memory_limit_value: exercise?.otherProps?.memory_limit?.value || 128000,
+        max_file_size_value: exercise?.otherProps?.max_file_size?.value || 1024,
+        max_file_size_enable: exercise?.otherProps?.max_file_size?.enabled || false,
+        enable_network: exercise?.otherProps?.enable_network || true
     });
     const [loading, setLoading] = useState(false);
 
@@ -40,6 +50,14 @@ const ExerciseForm = ({ setNewExercise }) => {
             [name]: type === 'checkbox' ? checked : value
         }));
     };
+
+    const handleCancel = (e) => {
+        if (setNewExercise){
+            setNewExercise(false)
+        } else {
+            navigate("/")
+        }
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -93,11 +111,20 @@ const ExerciseForm = ({ setNewExercise }) => {
             author: auth.user
         };
 
-        dispatch(createCodeExercise({ codeExercise: formFields, token: auth.token }));
+        if (exercise) {
+            dispatch(updateExercise({ id: exercise.id, formFields, token: auth.token }));
+        }
+        else {
+            dispatch(createCodeExercise({ codeExercise: formFields, token: auth.token }));
+        }
         setTimeout(() => {
             setLoading(false);
-            setNewExercise(false);
+            if (setNewExercise)
+                setNewExercise(false);
         }, 1500);
+        if (exercise) {
+            navigate('/');
+        }
     };
 
     return (
@@ -177,7 +204,11 @@ const ExerciseForm = ({ setNewExercise }) => {
                         <div className="flex items-center">
                             <FormControlLabel
                                 control={
-                                    <IOSSwitch sx={{ m: 1 }} type="checkbox" checked={formData.enable_network} onChange={handleChange} name="enable_network" />
+                                    <IOSSwitch sx={{ m: 1 }}
+                                        type="checkbox"
+                                        checked={formData.enable_network}
+                                        onChange={handleChange}
+                                        name="enable_network" />
                                 }
                                 label="Enable Network (Optional, default: true):"
                             />
@@ -188,13 +219,17 @@ const ExerciseForm = ({ setNewExercise }) => {
                         <div className="flex items-center">
                             <FormControlLabel
                                 control={
-                                    <IOSSwitch sx={{ m: 1 }} type="checkbox" checked={formData.memory_limit_enable} onChange={handleChange} name="memory_limit_enable" />
+                                    <IOSSwitch sx={{ m: 1 }}
+                                        type="checkbox"
+                                        checked={formData.time_limit_enable}
+                                        onChange={handleChange}
+                                        name="time_limit_enable" />
                                 }
                                 label="Time limit (Optional, default:2000 miliseconds):"
                             />
                         </div>
                         {
-                            formData.memory_limit_enable &&
+                            formData.time_limit_enable &&
                             < FormControl sx={{ m: 1, width: '25ch' }} variant="filled">
                                 <FilledInput
                                     type='number'
@@ -214,12 +249,16 @@ const ExerciseForm = ({ setNewExercise }) => {
                         <div className="flex items-center">
                             <FormControlLabel
                                 control={
-                                    <IOSSwitch sx={{ m: 1 }} type="checkbox" checked={formData.memory_limit_enable} onChange={handleChange} name="memory_limit_enable" />
+                                    <IOSSwitch sx={{ m: 1 }}
+                                        type="checkbox"
+                                        checked={formData.max_file_size_enable}
+                                        onChange={handleChange}
+                                        name="max_file_size_enable" />
                                 }
                                 label="FileSize (Optional, default: 1024 kilobytes)"
                             />
                         </div>
-                        {formData.memory_limit_enable &&
+                        {formData.max_file_size_enable &&
                             <FormControl sx={{ m: 1, width: '25ch' }} variant="filled">
                                 <FilledInput
                                     type='number'
@@ -272,7 +311,7 @@ const ExerciseForm = ({ setNewExercise }) => {
                             {loading ? 'Loading...' : 'Submit'}
                         </button>
                         <button
-                            onClick={() => setNewExercise(false)}
+                            onClick={handleCancel}
                             type="submit"
                             className="mx-4 py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                             disabled={loading}

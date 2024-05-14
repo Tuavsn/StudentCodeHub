@@ -7,6 +7,20 @@ export const CODE_EXERCISE_TYPES = {
     GET_EXERCISE: "GET_EXERCISE",
     DELETE_EXERCISE: "DELETE_EXERCISE",
     APPROVE_EXERCISE: "APPROVE_EXERCISE",
+    UPDATE_EXERCISE: "UPDATE_EXERCISE",
+}
+
+export const updateExercise = ({ id, formFields, token }) => async dispatch => {
+    try {
+        dispatch({ type: GLOBALTYPES.LOADING, payload: true })
+        const res = await postDataAPI(`code-exercise/${id}/update`, formFields, token)
+        dispatch({ type: CODE_EXERCISE_TYPES.UPDATE_EXERCISE, payload: { id, updatedExercise: res.data.updatedExercise } })
+        dispatch({ type: GLOBALTYPES.SUCCESS_ALERT, payload: res.data.msg })
+        dispatch({ type: GLOBALTYPES.LOADING, payload: false })
+    } catch (err) {
+        dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: "Cập nhật không thành công"})
+        dispatch({ type: GLOBALTYPES.LOADING, payload: false })
+    }
 }
 
 export const deleteExercise = ({ id, token }) => async dispatch => {
@@ -17,7 +31,7 @@ export const deleteExercise = ({ id, token }) => async dispatch => {
         dispatch({ type: GLOBALTYPES.LOADING, payload: false })
         dispatch({ type: GLOBALTYPES.SUCCESS_ALERT, payload: res.data.msg })
     } catch (err) {
-        dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: err.response.data.msg })
+        dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: "Xoá không thành công" })
         dispatch({ type: GLOBALTYPES.LOADING, payload: false })
     }
 
@@ -55,7 +69,7 @@ export const createCodeExercise = ({ codeExercise, token }) => async dispatch =>
         dispatch({ type: CODE_EXERCISE_TYPES.CREATE_EXERCISE, payload: res.data.queueExercise })
         dispatch({ type: GLOBALTYPES.LOADING, payload: false })
     } catch (err) {
-        dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: err.response.data.msg })
+        dispatch({ type: GLOBALTYPES.ERROR_ALERT, payload: "Tạo bài code không thành công" })
         dispatch({ type: GLOBALTYPES.LOADING, payload: false })
     }
 }

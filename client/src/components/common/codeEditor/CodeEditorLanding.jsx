@@ -18,6 +18,45 @@ import { postDataAPI } from "../../../utils/fetchData";
 const javascriptDefault = `console.log('Hello, World!')
 `;
 
+const template_result = `
+additional_files: null
+callback_url: null
+command_line_arguments: null
+compile_output: null
+compiler_options: null
+cpu_extra_time: "1.0"
+cpu_time_limit: "5.0"
+created_at: "2024-05-13T09:00:38.967Z"
+enable_network: false
+enable_per_process_and_thread_memory_limit: false
+enable_per_process_and_thread_time_limit: false
+exit_code: 0
+exit_signal: null
+expected_output: "5"
+finished_at: "2024-05-13T09:00:39.201Z"
+language: 
+{id: 71, name: 'Python (3.8.1)'}
+language_id: 71
+max_file_size: 1024
+max_processes_and_or_threads: 60
+memory: 3164
+memory_limit: 128000
+message: null
+number_of_runs: 1
+redirect_stderr_to_stdout: false
+source_code: "a = int(input())\nb = int(input())\n\nprint(a+b)"
+stack_limit: 64000
+status: {id: 3, description: 'Accepted'}
+status_id: 3
+stderr: null
+stdin: "2\n3"
+stdout: "5\n"
+time: "0.007"
+token: "5458eb8d-d658-4c45-987c-879baae6a82d"
+wall_time: "0.007"
+wall_time_limit: "10.0
+`;
+
 const CodeEditorLanding = ({ exercise }) => {
   const { auth } = useSelector(state => state);
   const [code, setCode] = useState(javascriptDefault);
@@ -25,6 +64,9 @@ const CodeEditorLanding = ({ exercise }) => {
   const [processing, setProcessing] = useState(null);
   const [theme, setTheme] = useState("cobalt");
   const [language, setLanguage] = useState(languageOptions[0]);
+
+  const user = auth.user;
+  const token = auth.token;
 
   const onSelectChange = (sl) => {
     setLanguage(sl);
@@ -46,11 +88,11 @@ const CodeEditorLanding = ({ exercise }) => {
     const formData = {
       language_id: language.id,
       code: code,
-      user: auth.user,
+      user: user,
       exercise: exercise
     }
-    const response = await postDataAPI('code-exercises/compile', formData, auth.token)
-    console.log(response)
+    const response = await postDataAPI('code-exercises/compile', formData, token)
+    setOutputDetails(response.data.codeSubmission)
     showSuccessToast('score: ' + response.data.codeSubmission.score)
     setProcessing(false);
   }

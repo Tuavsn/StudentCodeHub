@@ -4,6 +4,7 @@ import ExerciseForm from "./ExerciseForm";
 import { NormalButton } from "../mui/Button";
 import { loadCSS } from 'fg-loadcss';
 import Icon from '@mui/material/Icon';
+
 const PracticeLanding = () => {
 
     React.useEffect(() => {

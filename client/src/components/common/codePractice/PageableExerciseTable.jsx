@@ -25,27 +25,39 @@ const PageableExerciseTable = () => {
         { id: 'tags', label: 'Tags', isAsc: true },
         { id: 'createdAt', label: 'Ngày tạo', isAsc: true }
     ];
-    const { codeExercises, userType } = useSelector((state) => state);
+    const { codeExercises, userType, auth } = useSelector((state) => state);
     const [rows, setRows] = React.useState([]);
     const [headCells, setHeadCells] = React.useState([]);
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('');
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const [listSelected, setListSelected] = React.useState(true);
-
+    const [selecting, setSelecting] = React.useState({ list: true, yourExercises: false, approve: false });
+    React.useEffect(() => {
+        setHeadCells(headers);
+    }, []);
 
     React.useEffect(() => {
-        setRows(codeExercises.codeExercises);
-        setHeadCells(headers);
-
-        if (!listSelected && userType === "ADMIN") {
-            setRows(codeExercises.queueExercises);
+        if (selecting.list) {
+            setRows(codeExercises.codeExercises);
             if (rows.length !== 0) {
                 setOrderBy('createdAt');
             }
         }
-    }, [rows, codeExercises]);
+        else if (selecting.approve && userType === "ADMIN") {
+            setRows(codeExercises.queueExercises);
+            if (rows.length !== 0) {
+                setOrderBy('createdAt');
+            }
+        } else {
+            const AllExercises = codeExercises.codeExercises.concat(codeExercises.queueExercises);
+            const yourExercises = AllExercises.filter(exercise => exercise.author.id === auth.user.id);
+            setRows(yourExercises);
+            if (rows.length !== 0) {
+                setOrderBy('createdAt');
+            }
+        }
+    }, [codeExercises, selecting]);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -61,11 +73,16 @@ const PageableExerciseTable = () => {
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
     const handleChangeTable = (value) => {
-        setListSelected(value);
-        if (!value) {
-            setRows(codeExercises.queueExercises);
-        } else {
-            setRows(codeExercises.codeExercises);
+        switch (value) {
+            case "list":
+                setSelecting({ list: true, yourExercises: false, approve: false });
+                break;
+            case "yourExercises":
+                setSelecting({ list: false, yourExercises: true, approve: false });
+                break;
+            case "approve":
+                setSelecting({ list: false, yourExercises: false, approve: true });
+                break;
         }
     }
 
@@ -81,39 +98,49 @@ const PageableExerciseTable = () => {
         <Box sx={{ width: '80%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
                 <TableContainer>
-                    <Table
-                        aria-label="collapsible table"
-                        sx={{ minWidth: 750 }}
-                        aria-labelledby="tableTitle"
-                    >
-                        {userType === "ADMIN" && (<TableHead>
+                    <Table>
+                        <TableHead>
                             <TableRow>
                                 <TableCell
                                     sx={{
                                         cursor: 'pointer',
-                                        borderRight: '2px solid ' + COLOR_CONST.COLOR_0d6efd,
-                                        backgroundColor: listSelected ? COLOR_CONST.COLOR_0d6efd : '#fff',
-                                        color: listSelected ? '#fff' : '#000'
+                                        backgroundColor: selecting.list ? COLOR_CONST.COLOR_0d6efd : '#fff',
+                                        color: selecting.list ? '#fff' : '#000',
                                     }}
-                                    onClick={() => { handleChangeTable(true) }}
+                                    onClick={() => { handleChangeTable("list") }}
                                     align='center'
-                                    colSpan={4}>
+                                >
                                     List Exercise
                                 </TableCell>
                                 <TableCell
                                     sx={{
                                         cursor: 'pointer',
-                                        backgroundColor: !listSelected ? COLOR_CONST.COLOR_0d6efd : '#fff',
-                                        color: !listSelected ? '#fff' : '#000',
+                                        backgroundColor: selecting.yourExercises ? COLOR_CONST.COLOR_0d6efd : '#fff',
+                                        color: selecting.yourExercises ? '#fff' : '#000',
                                     }}
-                                    onClick={() => { handleChangeTable(false) }}
-                                    colSpan={3}
+                                    onClick={() => { handleChangeTable("yourExercises") }}
+                                    align='center'>
+                                    Your Exercise
+                                </TableCell>
+                                {userType === "ADMIN" && (<TableCell
+                                    sx={{
+                                        cursor: 'pointer',
+                                        backgroundColor: selecting.approve ? COLOR_CONST.COLOR_0d6efd : '#fff',
+                                        color: selecting.approve ? '#fff' : '#000',
+                                    }}
+                                    onClick={() => { handleChangeTable("approve") }}
                                     align='center'>
                                     Queue Exercise
                                 </TableCell>
+                                )}
                             </TableRow>
                         </TableHead>
-                        )}
+                    </Table>
+                    <Table
+                        aria-label="collapsible table"
+                        sx={{ minWidth: 750 }}
+                        aria-labelledby="tableTitle"
+                    >
                         <EnhancedTableHead
                             key={'enhancedTableHead'}
                             order={order}
@@ -130,7 +157,7 @@ const PageableExerciseTable = () => {
                             {visibleRows.map((row, index) => {
                                 const labelId = `collapsible-custom-row-${index}`;
                                 return (
-                                    <CustomRow key={labelId} row={row} index={index + 1} listSelected={listSelected} setRows={setRows} />
+                                    <CustomRow key={labelId} row={row} index={index + 1} selecting={selecting} setRows={setRows} />
                                 );
                             })}
                             {emptyRows > 0 && (

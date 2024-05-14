@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from '../images/studentcodehub_logo.png';
+import { postDataAPI } from "../utils/fetchData";
 
 const ResetPass = () => {
 
@@ -16,7 +17,7 @@ const ResetPass = () => {
         setErrors({ ...errors, [name]: "" });
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Kiểm tra validation
@@ -28,7 +29,12 @@ const ResetPass = () => {
         }
 
         if (Object.keys(errors).length === 0) {
-            navigate("/otp-confirmation", { state: { email: email, otp_type: "RESET_PASSWORD", userData: null } })
+            const res = await postDataAPI("auth/check-email", { email: email })
+            if (res.data.status === "exist")
+                navigate("/otp-confirmation", { state: { email: email, otp_type: "RESET_PASSWORD", userData: null } })
+            else {
+                setErrors({ ...errors, email: "Email không tồn tại" })
+            }
         } else {
             // Nếu có lỗi, hiển thị thông báo lỗi
             setErrors(errors);

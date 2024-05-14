@@ -31,9 +31,21 @@ public class CodeExerciseController {
 	@Autowired
 	private CodeExerciseService codeExerciseService;
 
+	@PostMapping("/code-exercise/{id}/update")
+	public ResponseEntity<Map<String, Object>> updateCodeExercise(@PathVariable("id") int id,
+																  @RequestBody CodeExerciseDto codeExercise, HttpServletRequest request) {
+		System.out.println("id: " + id);
+		System.out.println(codeExercise.toString());
+		code_exercise updatedExercise = codeExerciseService.updateCodeExercise(id, codeExercise, request);
+		Map<String, Object> response = new java.util.HashMap<>();
+		response.put("updatedExercise", updatedExercise);
+		response.put("msg", "Cập nhật thành công");
+		return ResponseEntity.ok(response);
+	}
+
 	@DeleteMapping("/code-exercise/{id}")
 	public ResponseEntity<Map<String, Object>> deleteCodeExercise(@PathVariable("id") int id,
-			HttpServletRequest request) {
+																  HttpServletRequest request) {
 		codeExerciseService.deleteCodeExercise(id, request);
 		Map<String, Object> response = new java.util.HashMap<>();
 		response.put("msg", "Xoá thành công");
@@ -42,7 +54,7 @@ public class CodeExerciseController {
 
 	@GetMapping("/queue-code-exercise/{id}/approve")
 	public ResponseEntity<Map<String, Object>> approveQueueExercise(@PathVariable("id") int id,
-			HttpServletRequest request) {
+																	HttpServletRequest request) {
 		code_exercise approvedExercise;
 		try {
 			approvedExercise = codeExerciseService.approveQueueExercise(id, request);
@@ -59,7 +71,7 @@ public class CodeExerciseController {
 
 	@PostMapping("/code-exercises")
 	public ResponseEntity<Map<String, Object>> createQueueExercise(@RequestBody CodeExerciseDto codeExercise,
-			HttpServletRequest request) {
+																   HttpServletRequest request) {
 		code_exercise newQueueExercise = codeExerciseService.createQueueExercise(codeExercise);
 
 		Map<String, Object> response = new java.util.HashMap<>();
@@ -90,11 +102,9 @@ public class CodeExerciseController {
 
 	@PostMapping("/code-exercises/compile")
 	public ResponseEntity<Map<String, Object>> submitCode(@RequestBody CodeSubmissonDto body,
-			HttpServletRequest request) {
+														  HttpServletRequest request) {
 
 		Map<String, Object> response = new java.util.HashMap<>();
-
-		body.setExercise(codeExerciseService.getCodeExerciseById(body.getExercise().getId()));
 
 		code_submission codeSubmission = codeExerciseService.submitCode(body.getExercise(), body.getCode(),
 				body.getUser(), body.getLanguage_id());

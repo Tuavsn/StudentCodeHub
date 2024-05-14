@@ -86,7 +86,7 @@ const AdminProfile = () => {
                 </div>
             </div>
             <InputPost />
-            <UpdatePost />
+            <UpdatePost type="profilePost"/>
             <UpdateInfo user={auth.user} />
         </section>
     )

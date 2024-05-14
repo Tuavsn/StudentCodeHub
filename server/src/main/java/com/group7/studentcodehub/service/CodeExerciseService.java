@@ -108,15 +108,11 @@ public class CodeExerciseService {
 				}
 			}
 
-			code_submission codeSubmission = code_submission.builder()
-					.code(code)
-					.codeExercise(codeExercise)
-					.user(User)
-					.language_id(language_id)
-					.score(totalScore * (1.0 * accepted / testCasesCount))
-					.result(results.toString())
-					.createAt(LocalDateTime.now(vietnamZone))
-					.build();
+			code_exercise exercise = codeExerciseRepository.findById(codeExercise.getId()).get();
+
+			code_submission codeSubmission = code_submission.builder().code(code).codeExercise(exercise).user(User)
+					.language_id(language_id).score(totalScore * (1.0 * accepted / testCasesCount))
+					.result(results.toString()).build();
 			codeSubmissionRepository.save(codeSubmission);
 			return codeSubmission;
 		} catch (Exception e) {
@@ -131,7 +127,8 @@ public class CodeExerciseService {
 				.tags(codeExercise.getTags()).difficulty(codeExercise.getDifficulty()).status("NOT_APPROVED")
 				.otherProps(codeExercise.getOtherProps()).testCases(codeExercise.getTestCases())
 				.author(codeExercise.getAuthor()).totalScore(codeExercise.getTotalScore())
-				.createAt(java.time.LocalDateTime.now()).build();
+				.createAt(LocalDateTime.now(vietnamZone))
+				.build();
 		return codeExerciseRepository.save(newCodeExercise);
 	}
 
@@ -149,8 +146,7 @@ public class CodeExerciseService {
 			if (jwtService.isTokenValid(refreshToken, User) && User.getRole().equals("ADMIN")) {
 				code_exercise codeExercise = codeExerciseRepository.findById(id).get();
 				codeExercise.setStatus("APPROVED");
-				codeExerciseRepository.save(codeExercise);
-				return codeExercise;
+				return codeExerciseRepository.save(codeExercise);
 			}
 		}
 		return null;
@@ -173,5 +169,33 @@ public class CodeExerciseService {
 				codeExerciseRepository.deleteById(id);
 			}
 		}
+	}
+
+	public code_exercise updateCodeExercise(int id, CodeExerciseDto codeExercise, HttpServletRequest request) {
+		final String authHeader = request.getHeader("Authorization");
+		final String refreshToken;
+		final String userName;
+		if (authHeader == null || !authHeader.startsWith("Bearer"))
+			return null;
+		refreshToken = authHeader.substring(7);
+		userName = jwtService.extractUsername(refreshToken);
+		if (userName != null) {
+			user User = userRepository.findByUserName(userName)
+					.orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng"));
+			var codeExerciseEntity = codeExerciseRepository.findById(id);
+			if (jwtService.isTokenValid(refreshToken, User)
+					&& User.getId() == codeExerciseEntity.get().getAuthor().getId()) {
+				codeExerciseEntity.get().setTitle(codeExercise.getTitle());
+				codeExerciseEntity.get().setDescription(codeExercise.getDescription());
+				codeExerciseEntity.get().setExample(codeExercise.getExample());
+				codeExerciseEntity.get().setTags(codeExercise.getTags());
+				codeExerciseEntity.get().setDifficulty(codeExercise.getDifficulty());
+				codeExerciseEntity.get().setOtherProps(codeExercise.getOtherProps());
+				codeExerciseEntity.get().setTestCases(codeExercise.getTestCases());
+				codeExerciseEntity.get().setTotalScore(codeExercise.getTotalScore());
+				return codeExerciseRepository.save(codeExerciseEntity.get());
+			}
+		}
+		return null;
 	}
 }

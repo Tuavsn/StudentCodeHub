@@ -4,7 +4,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import { updatePost } from "../../../redux/action/postAction";
 import { useDispatch, useSelector } from "react-redux";
 
-const UpdatePost = () => {
+const UpdatePost = ({type}) => {
     const { auth, homePosts } = useSelector((state) => state)
     const dispatch = useDispatch()
     const editorRef = useRef(null);
@@ -74,7 +74,7 @@ const UpdatePost = () => {
             errors.headerInput = "Tiêu đề quá dài, vui lòng nhập ít hơn 90 ký tự"
         }
         if (Object.keys(errors).length === 0) {
-            dispatch(updatePost({post: homePosts.currentPost, header: headerInput , postImages: selectedFiles, content: editorData, isNewImage: isNewImage, auth: auth}))
+            dispatch(updatePost({post: homePosts.currentPost, header: headerInput , postImages: selectedFiles, content: editorData, isNewImage: isNewImage, auth: auth, type: type}))
         
             setSelectedFiles([]);
             

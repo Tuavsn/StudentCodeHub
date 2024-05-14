@@ -27,7 +27,8 @@ const Ranking = ({ submissions }) => {
     // ];
 
     let rankings = submissions;
-    rankings = rankings.sort((a, b) => b.score - a.score).slice(0, 8);
+    if (rankings)
+        rankings = rankings.sort((a, b) => b.score - a.score).slice(0, 8);
     return (
         <div className="w-full h-auto bg-sky-500/10 px-4 py-2 rounded-lg shadow-md" >
             <h2 className="text-xl font-bold mb-4" > Ranking </h2>

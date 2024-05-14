@@ -25,8 +25,7 @@ const PostDetail = () => {
                     <PostCard post={homePosts.detailPost} type="detailPost" />
                 )}
             </div>
-            <InputPost />
-            <UpdatePost />
+            <UpdatePost type="detailPost" />
         </>
     )
 }

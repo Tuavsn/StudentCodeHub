@@ -38,7 +38,6 @@ public class code_exercise {
 	private String difficulty;
 	private String status;
 	private String otherProps;
-	@JsonIgnore
 	private String testCases;
 	@ManyToOne
 	private user author;

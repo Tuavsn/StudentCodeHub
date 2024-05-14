@@ -48,7 +48,7 @@ public class AuthenticationService {
 	private EmailService emailService;
 
 	private final String RESET_PASSWORD_TYPE = "RESET_PASSWORD";
-	private final String REGIST_TYPE = "REGIST";
+	public final String REGIST_TYPE = "REGIST";
 	private final String boundary = "-/-/-/";
 
 	public user getUserByEmail(String email) {
@@ -308,6 +308,15 @@ public class AuthenticationService {
 		var User = userRepository.findByEmail(email).orElseThrow();
 		User.setPassword(passwordEncoder.encode(password));
 		return userRepository.save(User);
+	}
+
+	public user getUserByUsername(String username) {
+		try {
+			user u = userRepository.findByUserName(username).orElseThrow();
+			return u;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 }

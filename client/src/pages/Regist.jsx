@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { regist } from "../redux/action/authAction"
 import { useNavigate } from "react-router-dom"
 import logo from '../images/studentcodehub_logo.png'
+import { GLOBALTYPES } from "../redux/action/globalTypes";
+import { postDataAPI } from "../utils/fetchData";
 
 const Regist = () => {
     const  initialState = {fullName: "", userName: "", email: "", password: ""}
@@ -23,7 +24,7 @@ const Regist = () => {
         setErrors({ ...errors, [name]: "" });
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
     
         // Kiểm tra validation
@@ -59,8 +60,23 @@ const Regist = () => {
         }
     
         if (Object.keys(errors).length === 0) {
-            // Nếu không có lỗi, gửi form
-            history("/otp-confirmation", { state: { email: email, otp_type: "REGIST", userData: userData } })
+            dispatch({ type: GLOBALTYPES.LOADING, payload: true })
+            const validEmail = await postDataAPI("auth/check-email", { email: email })
+
+            if (validEmail.data.status === "valid") {
+                const validUsername = await postDataAPI("auth/check-username", { username: userName })
+
+                if (validUsername.data.status === "valid") {
+                    dispatch({ type: GLOBALTYPES.LOADING, payload: false })
+                    history("/otp-confirmation", { state: { email: email, otp_type: "REGIST", userData: userData } })
+                } else {
+                    setErrors({ ...errors, userName: "Tên đăng nhập đã tồn tại" })
+                }
+            } else {
+                setErrors({ ...errors, email: "Email đã tồn tại" })
+            }
+
+            dispatch({ type: GLOBALTYPES.LOADING, payload: false })
         } else {
             // Nếu có lỗi, hiển thị thông báo lỗi
             setErrors(errors);

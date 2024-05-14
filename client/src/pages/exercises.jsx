@@ -6,7 +6,10 @@ import Ranking from "../components/common/exerciseDetail/Ranking";
 import { NormalButton } from "../components/common/mui/Button";
 import { NotFoundPage } from "./NotFoundPage";
 import CodeEditorLanding from "../components/common/codeEditor/CodeEditorLanding";
+import ExerciseForm from "../components/common/codePractice/ExerciseForm";
 import { useNavigate } from "react-router-dom";
+
+
 const ExerciseDetailPage = ({ id, action }) => {
     const { codeExercises } = useSelector((state) => state)
     const navigate = useNavigate()
@@ -19,6 +22,11 @@ const ExerciseDetailPage = ({ id, action }) => {
     if (action == 'do') {
         return <CodeEditorLanding exercise={exercise} />
     }
+
+    if (action == 'update') {
+        return <ExerciseForm exercise={exercise} />
+    }
+
     const handleDoExerciseClick = () => {
         navigate(`/exercises/${id}/do`);
     }
@@ -45,7 +53,7 @@ const ExerciseDetailPage = ({ id, action }) => {
             <hr />
             <div className="right-container flex flex-col items-center w-[30%] h-full sticky top-0">
                 <div className="w-[95%] h-auto">
-                    <Ranking submissions={exercise.codeSubmissions} />
+                    <Ranking submissions={exercise?.codeSubmissions} />
                 </div>
             </div>
         </div >
